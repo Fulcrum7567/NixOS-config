@@ -12,7 +12,7 @@ if [ $# -gt 0 ]
     SCRIPT_DIR=~/.dotfiles
 fi
 
-nix-shell -p git --command "git clone git@github.com/Fulcrum7567/NixOS-config $SCRIPT_DIR"
+nix-shell -p git --command "git clone https://github.com/Fulcrum7567/NixOS-config.git $SCRIPT_DIR"
 
 while [[ -z "$hostname" ]]; do
 	read "What is the name of your device? " $hostname
