@@ -3,8 +3,8 @@ The format is as followed:
 
 ```
 {HOST_NAME}
-	| configuration.nix	---------------- default configuration file, created during installation
+	| configuration.nix	------------ default configuration file, created during installation
 	| hardware-configuration.nix	---- hardware configuration of this device, created during installation
-	| additionalHomeConfig.nix	-------- additional configuration to be imported for home manager on this device 
+	| additionalHomeConfig.nix	---- additional configuration to be imported for home manager on this device 
 	| additionalConfig.nix	------------ additional configuration to be imported for this device
 ```
