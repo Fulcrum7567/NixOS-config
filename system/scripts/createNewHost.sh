@@ -5,7 +5,7 @@ hostname=""
 no_new_config=false
 debug=false
 skip_confirm=false
-path_to_dotfiles="$PWD"/../../../
+path_to_dotfiles="$PWD/../../../"
 
 # Function to display usage
 usage() {

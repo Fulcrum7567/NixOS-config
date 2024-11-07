@@ -3,7 +3,7 @@
 # Initialize variables
 add_flag=false
 path=""
-dotfiles="$PWD/../.."
+dotfiles="$PWD"/../../
 currentDevice=$CURRENT_DEVICE
 
 #!/bin/bash
@@ -43,13 +43,14 @@ if [[ -z "$path" ]]; then
 fi
 
 # Check if required arguments are set
-
-if [[ ! -f $dotfiles/additionalConfigs/$1.nix ]]; then
-	mkdir -p $(dirname "$dotfiles/additionalConfigs/$1") 
-	cp "$PWD/presets/additionalConfigs/newAdditionalConfig.nix" $dotfiles/additionalConfigs/$1.nix
+mkdir -p "$dotfiles/additionalConfigs/"
+if [[ ! -f $dotfiles/additionalConfigs/$path.nix ]]; then
+	mkdir -p $(dirname "$dotfiles/additionalConfigs/$path") 
+	cp "$PWD/presets/additionalConfigs/newAdditionalConfig.nix" "$dotfiles/additionalConfigs/$path.nix"
+    echo copied
 fi
 
-$EDITOR $dotfiles/additionalConfigs/$1.nix
+$EDITOR $dotfiles/additionalConfigs/$path.nix
 
 if [ "$add_flag" == true -a ! -z $currentDevice ]; then
 	echo adding to $currentDevice
