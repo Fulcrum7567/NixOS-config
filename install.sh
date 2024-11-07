@@ -25,4 +25,5 @@ if [ -n "$?" = 0 ]; then
 	exit -1
 fi
 
-sh $SCRIPT_DIR/system/scripts/createNewHost.sh --hostname "$hostname"
+cp $SCRIPT_DIR/system/scripts/presets/hosts/currentHost.nix $SCRIPT_DIR/hosts
+git update-index --assume-unchanged $SCRIPT_DIR/hosts/currentHost.nix
