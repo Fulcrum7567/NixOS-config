@@ -37,25 +37,19 @@
 
 	outputs = inputs@{ self, ... }:
 	let
-	
-		# currentDeviceFile = import ./devices/currentDevice.nix;
-		# currentDevice = "PET";
-		# deviceSettings = import (./devices/${currentDevice}/deviceConfig.nix);
-		# deviceUserSettings = import (./users/${deviceSettings.user}/deviceSettings/${currentDevice}.nix);
 		
-		
-		# ╔══════════════════════════════╗
-		# ║                              ║
-		# ║     o                        ║
-		# ║    O                         ║
-		# ║    o                  O      ║
-		# ║    O                 oOo     ║
-		# ║    OoOo. .oOo. .oOo   o      ║
-		# ║    o   o O   o `Ooo.  O      ║
-		# ║    o   O o   O     O  o      ║
-		# ║    O   o `OoO' `OoO'  `oO    ║
-		# ║                              ║
-		# ╚══════════════════════════════╝
+		# ╔═══════════════════════════════════════════════════════════╗
+		# ║                                                           ║
+		# ║                                    o     o                ║
+		# ║                         o         O     O                 ║
+		# ║                                   O     o                 ║
+		# ║                                   o     O                 ║
+		# ║    `o   O .oOoO' `OoOo. O  .oOoO' OoOo. o  .oOo. .oOo     ║
+		# ║     O   o O   o   o     o  O   o  O   o O  OooO' `Ooo.    ║
+		# ║     o  O  o   O   O     O  o   O  o   O o  O         O    ║
+		# ║     `o'   `OoO'o  o     o' `OoO'o `OoO' Oo `OoO' `OoO'    ║
+		# ║                                                           ║
+		# ╚═══════════════════════════════════════════════════════════╝
 		
 		# Get name of current host
 		currentHost = (import ./hosts/currentHost.nix )
@@ -165,9 +159,9 @@
 					);
     
 
-  in
-  {
-	
+	in
+	{
+		
 		# ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 		# ║                                                                                                                                ║
 		# ║    .oOOOo.  o       O .oOOOo.  oOoOOoOOo o.OOoOoo Oo      oO                                                                   ║
@@ -188,63 +182,60 @@
 		# ║     `OoooO'   `OoooO'  O     `o O'      ooOOoOo   `OooO'   `OoooO'O  O      o O.     O     o'    ooOOoOo  `OoooO'  O     `o    ║
 		# ║                                                                                                                                ║
 		# ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-	
-    # ----- SYSTEM CONFIGURATION ----- #
-    nixosConfigurations = {
-    	system = lib.nixosSystem {
-      	system = hostSettings.system;
-        modules = [
-        	./hosts/GLOBAL/additionalConfig.nix
-        ];
-        specialArgs = {
-        	inherit currentHost, hostSettings;
-        };
-      };
+		
+		# ----- SYSTEM CONFIGURATION ----- #
+		nixosConfigurations = {
+			system = lib.nixosSystem {
+				system = hostSettings.system;
+				modules = [
+					./hosts/GLOBAL/additionalConfig.nix
+				];
+				specialArgs = {
+					inherit currentHost, hostSettings;
+				};
+			};
+		};
+		
+		
+
+		# ----- HOME-MANAGER CONFIGURATION ----- #
+		homeConfigurations = {
+			user = home-manager.lib.homeManagerConfiguration {
+				inherit pkgs;
+				modules = [
+					./hosts/GLOBAL/additionalHome.nix
+				];
+				extraSpecialArgs = {
+				inherit currentHost, hostSettings;
+				};
+			};
+		};
+		
+
+
+
+
+
+		# define packages for installation
+		packages = forAllSystems (system:
+			let pkgs = nixpkgsFor.${system};
+			in {
+			  default = self.packages.${system}.install;
+
+			  install = pkgs.writeShellApplication {
+				name = "install";
+				runtimeInputs = with pkgs; [ git ];
+				text = ''${./install.sh} "$@"'';
+			  };
+			});
+		
+		# define apps for installation
+		apps = forAllSystems (system: {
+			default = self.apps.${system}.install;
+			install = {
+				type = "app";
+				program = "${self.packages.${system}.install}/bin/install";
+			};
+		});
     };
-	
-	
-
-    # ----- HOME-MANAGER CONFIGURATION ----- #
-    homeConfigurations = {
-      user = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-        	./hosts/GLOBAL/additionalHome.nix
-        ];
-        extraSpecialArgs = {
-          inherit currentHost, hostSettings;
-        };
-      };
-    };
-	
-
-
-
-
-
-	# define packages for installation
-	packages = forAllSystems (system:
-        let pkgs = nixpkgsFor.${system};
-        in {
-          default = self.packages.${system}.install;
-
-          install = pkgs.writeShellApplication {
-            name = "install";
-            runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
-            text = ''${./install.sh} "$@"'';
-          };
-        });
-	
-	# define apps for installation
-	apps = forAllSystems (system: {
-        default = self.apps.${system}.install;
-
-        install = {
-          type = "app";
-          program = "${self.packages.${system}.install}/bin/install";
-        };
-      });
-    };
-	
-  };
 }
