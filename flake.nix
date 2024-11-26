@@ -105,7 +105,7 @@
 			  allowUnfree = true;
 			  allowUnfreePredicate = (_: true);
 			};
-			overlays = [ inputs.rust-overlay.overlays.default ];
+			overlays = [ ];
 		  };
 		  
 		# define default packages
@@ -220,7 +220,7 @@
 
 
 
-	
+
 
 	# define packages for installation
 	packages = forAllSystems (system:
