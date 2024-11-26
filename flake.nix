@@ -168,63 +168,60 @@
   in
   {
 	
-	# ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-	# ║                                                                                                                                ║
-	# ║    .oOOOo.  o       O .oOOOo.  oOoOOoOOo o.OOoOoo Oo      oO                                                                   ║
-	# ║    o     o  O       o o     o      o      O       O O    o o                                                                   ║
-	# ║    O.       `o     O' O.           o      o       o  o  O  O                                                                   ║
-	# ║     `OOoo.    O   o    `OOoo.      O      ooOO    O   Oo   O                                                                   ║
-	# ║          `O    `O'          `O     o      O       O        o ooooooooo                                                         ║
-	# ║           o     o            o     O      o       o        O                                                                   ║
-	# ║    O.    .O     O     O.    .O     O      O       o        O                                                                   ║
-	# ║     `oooO'      O      `oooO'      o'    ooOooOoO O        o                                                                   ║
-	# ║     .oOOOo.   .oOOOo.  o.     O OOooOoO ooOoOOo  .oOOOo.  O       o `OooOOo.     Oo    oOoOOoOOo ooOoOOo  .oOOOo.  o.     O    ║
-	# ║    .O     o  .O     o. Oo     o o          O    .O     o  o       O  o     `o   o  O       o        O    .O     o. Oo     o    ║
-	# ║    o         O       o O O    O O          o    o         O       o  O      O  O    o      o        o    O       o O O    O    ║
-	# ║    o         o       O O  o   o oOooO      O    O         o       o  o     .O oOooOoOo     O        O    o       O O  o   o    ║
-	# ║    o         O       o O   o  O O          o    O   .oOOo o       O  OOooOO'  o      O     o        o    O       o O   o  O    ║
-	# ║    O         o       O o    O O o          O    o.      O O       O  o    o   O      o     O        O    o       O o    O O    ║
-	# ║    `o     .o `o     O' o     Oo o          O     O.    oO `o     Oo  O     O  o      O     O        O    `o     O' o     Oo    ║
-	# ║     `OoooO'   `OoooO'  O     `o O'      ooOOoOo   `OooO'   `OoooO'O  O      o O.     O     o'    ooOOoOo  `OoooO'  O     `o    ║
-	# ║                                                                                                                                ║
-	# ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+		# ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+		# ║                                                                                                                                ║
+		# ║    .oOOOo.  o       O .oOOOo.  oOoOOoOOo o.OOoOoo Oo      oO                                                                   ║
+		# ║    o     o  O       o o     o      o      O       O O    o o                                                                   ║
+		# ║    O.       `o     O' O.           o      o       o  o  O  O                                                                   ║
+		# ║     `OOoo.    O   o    `OOoo.      O      ooOO    O   Oo   O                                                                   ║
+		# ║          `O    `O'          `O     o      O       O        o ooooooooo                                                         ║
+		# ║           o     o            o     O      o       o        O                                                                   ║
+		# ║    O.    .O     O     O.    .O     O      O       o        O                                                                   ║
+		# ║     `oooO'      O      `oooO'      o'    ooOooOoO O        o                                                                   ║
+		# ║     .oOOOo.   .oOOOo.  o.     O OOooOoO ooOoOOo  .oOOOo.  O       o `OooOOo.     Oo    oOoOOoOOo ooOoOOo  .oOOOo.  o.     O    ║
+		# ║    .O     o  .O     o. Oo     o o          O    .O     o  o       O  o     `o   o  O       o        O    .O     o. Oo     o    ║
+		# ║    o         O       o O O    O O          o    o         O       o  O      O  O    o      o        o    O       o O O    O    ║
+		# ║    o         o       O O  o   o oOooO      O    O         o       o  o     .O oOooOoOo     O        O    o       O O  o   o    ║
+		# ║    o         O       o O   o  O O          o    O   .oOOo o       O  OOooOO'  o      O     o        o    O       o O   o  O    ║
+		# ║    O         o       O o    O O o          O    o.      O O       O  o    o   O      o     O        O    o       O o    O O    ║
+		# ║    `o     .o `o     O' o     Oo o          O     O.    oO `o     Oo  O     O  o      O     O        O    `o     O' o     Oo    ║
+		# ║     `OoooO'   `OoooO'  O     `o O'      ooOOoOo   `OooO'   `OoooO'O  O      o O.     O     o'    ooOOoOo  `OoooO'  O     `o    ║
+		# ║                                                                                                                                ║
+		# ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 	
     # ----- SYSTEM CONFIGURATION ----- #
     nixosConfigurations = {
-      system = lib.nixosSystem {
-        system = hostSettings.system;
+    	system = lib.nixosSystem {
+      	system = hostSettings.system;
         modules = [
-          ./devices/${currentDevice}/deviceConfigs/configuration.nix
-          ./users/${deviceSettings.user}/systemConfig.nix
-
+        	./hosts/GLOBAL/additionalConfig.nix
         ];
         specialArgs = {
-          inherit currentDevice;
-          inherit deviceUserSettings;
-          inherit lib;
-          inherit pkgs;
+        	inherit currentHost, hostSettings;
         };
       };
     };
 	
 	
-
-    # Expose the system configuration as the default package
-    defaultPackage."x86_64-linux" = self.nixosConfigurations.system.config.system.build.toplevel;
 
     # ----- HOME-MANAGER CONFIGURATION ----- #
     homeConfigurations = {
       user = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./users/${deviceSettings.user}/homeConfig.nix ];
+        modules = [
+        	./hosts/GLOBAL/additionalHome.nix
+        ];
         extraSpecialArgs = {
-          inherit deviceSettings;
-          inherit deviceUserSettings;
+          inherit currentHost, hostSettings;
         };
       };
     };
 	
+
+
+
 	
+
 	# define packages for installation
 	packages = forAllSystems (system:
         let pkgs = nixpkgsFor.${system};
