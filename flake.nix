@@ -25,12 +25,12 @@
 		# input home-manager
 		home-manager-stable = {
 			url = "github:nix-community/home-manager/release-24.11";
-			inputs.nixpkgs.follows = nixpkgs-stable;
+			inputs.nixpkgs.follows = "nixpkgs-stable";
 		}
 		
 		home-manager-unstable = {
 			url = "github:nix-community/home-manager/master";
-			inputs.nixpkgs.follows = nixpkgs-unstable;
+			inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 	
 	};
@@ -192,7 +192,7 @@
     # ----- SYSTEM CONFIGURATION ----- #
     nixosConfigurations = {
       system = lib.nixosSystem {
-        system = deviceSettings.system;
+        system = hostSettings.system;
         modules = [
           ./devices/${currentDevice}/deviceConfigs/configuration.nix
           ./users/${deviceSettings.user}/systemConfig.nix
@@ -206,6 +206,8 @@
         };
       };
     };
+	
+	
 
     # Expose the system configuration as the default package
     defaultPackage."x86_64-linux" = self.nixosConfigurations.system.config.system.build.toplevel;
@@ -221,5 +223,31 @@
         };
       };
     };
+	
+	
+	# define packages for installation
+	packages = forAllSystems (system:
+        let pkgs = nixpkgsFor.${system};
+        in {
+          default = self.packages.${system}.install;
+
+          install = pkgs.writeShellApplication {
+            name = "install";
+            runtimeInputs = with pkgs; [ git ]; # I could make this fancier by adding other deps
+            text = ''${./install.sh} "$@"'';
+          };
+        });
+	
+	# define apps for installation
+	apps = forAllSystems (system: {
+        default = self.apps.${system}.install;
+
+        install = {
+          type = "app";
+          program = "${self.packages.${system}.install}/bin/install";
+        };
+      });
+    };
+	
   };
 }
