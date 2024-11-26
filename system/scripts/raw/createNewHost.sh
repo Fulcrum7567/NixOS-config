@@ -30,23 +30,24 @@ if [[ -z "$1" ]]; then
 fi
 
 # Parse the arguments
-HOSTNAME="$1"
+hostname="$1"
 shift # Shift to process optional arguments
 
-DEBUG=false
-NO_NEW_CONFIG=false
-SKIP_CONFIRM=false
+debug=false
+no_new_config=false
+force=false
+path_to_dotfiles="$PWD/../../"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --debug|-d)
-            DEBUG=true
+            debug=true
             ;;
         --no-new-config)
-            NO_NEW_CONFIG=true
+            no_new_config=true
             ;;
-        --skip-confirm|-s)
-            SKIP_CONFIRM=true
+        --force|-f)
+            force=true
             ;;
         *)
             echo "Error: Unknown argument '$1'."
