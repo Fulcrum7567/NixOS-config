@@ -1,1 +1,0 @@
-Settings defined for every user.
