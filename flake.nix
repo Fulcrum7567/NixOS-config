@@ -55,7 +55,7 @@
 		currentHost = (import ./hosts/currentHost.nix );
 		
 		# Get settings of current host
-		hostSettings = import (./hosts/${currentHost}/hostSettings.nix);
+		hostSettings = ( import ./hosts/${currentHost}/hostSettings.nix );
 		
 		
 		# ╔═══════════════════════════════╗
@@ -84,7 +84,7 @@
 		
 		# patch unstable packages
 		nixpkgs-patched =
-			(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if systemSettings.gpu == "amd" then true else false); }).applyPatches {
+			(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if hostSettings.gpu == "amd" then true else false); }).applyPatches {
 			  name = "nixpkgs-patched";
 			  src = inputs.nixpkgs-unstable;
 			  patches = [ 
@@ -145,14 +145,14 @@
 		supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
 
 		# Function to generate a set based on supported systems:
-		forAllSystems = (if (systemSettings.systemState == "stable") then
+		forAllSystems = (if (hostSettings.systemState == "stable") then
 							inputs.nixpkgs-stable.lib.genAttrs supportedSystems
 						else
 							inputs.nixpkgs-unstable.lib.genAttrs supportedSystems
 						);
 
 		# Attribute set of nixpkgs for each system:
-		nixpkgsFor = (if (systemSettings.systemState == "stable") then
+		nixpkgsFor = (if (hostSettings.systemState == "stable") then
 						forAllSystems (system: import inputs.nixpkgs-stable { inherit system; })
 					else
 						forAllSystems (system: import inputs.nixpkgs-unstable { inherit system; })
