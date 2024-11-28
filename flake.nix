@@ -26,7 +26,7 @@
 		home-manager-stable = {
 			url = "github:nix-community/home-manager/release-24.11";
 			inputs.nixpkgs.follows = "nixpkgs-stable";
-		}
+		};
 		
 		home-manager-unstable = {
 			url = "github:nix-community/home-manager/master";
@@ -52,7 +52,7 @@
 		# ╚═══════════════════════════════════════════════════════════╝
 		
 		# Get name of current host
-		currentHost = (import ./hosts/currentHost.nix )
+		currentHost = (import ./hosts/currentHost.nix );
 		
 		# Get settings of current host
 		hostSettings = import (./hosts/${currentHost}/hostSettings.nix);
@@ -191,7 +191,7 @@
 					./hosts/GLOBAL/additionalConfig.nix
 				];
 				specialArgs = {
-					inherit currentHost, hostSettings;
+					inherit currentHost hostSettings;
 				};
 			};
 		};
@@ -206,7 +206,7 @@
 					./hosts/GLOBAL/additionalHome.nix
 				];
 				extraSpecialArgs = {
-				inherit currentHost, hostSettings;
+				inherit currentHost hostSettings;
 				};
 			};
 		};
