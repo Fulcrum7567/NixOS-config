@@ -52,7 +52,7 @@
 		# ╚═══════════════════════════════════════════════════════════╝
 		
 		# Get name of current host
-		currentHost = (import ./hosts/currentHost.nix );
+		currentHost = (import ./hosts/currentHost.nix ).currentHost;
 		
 		# Get settings of current host
 		hostSettings = ( import ./hosts/${currentHost}/hostSettings.nix );
@@ -75,7 +75,8 @@
 		
 		# define stable pkgs
 		pkgs-stable = import inputs.nixpkgs-stable {
-			system = hostSettings.system;
+			system = 
+			.system;
 			config = {
 				allowUnfree = true;
 				allowUnfreePredicate = (_: true);
@@ -84,7 +85,7 @@
 		
 		# patch unstable packages
 		nixpkgs-patched =
-			(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if hostSettings.gpu == "amd" then true else false); }).applyPatches {
+			(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if hostSettings.gpuManufacturer == "amd" then true else false); }).applyPatches {
 			  name = "nixpkgs-patched";
 			  src = inputs.nixpkgs-unstable;
 			  patches = [ 
