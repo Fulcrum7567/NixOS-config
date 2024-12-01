@@ -25,33 +25,33 @@ print_usage_force() {
 }
 
 print_usage() {
-    if [[ "$no_usage" = false ]]; then
+    if [ "$no_usage" = false ]; then
         print_usage_force
     fi
 } 
 
 
 print_debug() {
-    if [[ "$debug" == true ]]; then
+    if [ "$debug" = true ]; then
         echo "[Debug]: $1"
     fi
 }
 
 
 # Check for --help or -h before processing other arguments
-if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+if [ "$1" = "--help" -o "$1" = "-h" ]; then
     print_usage_force
     exit 0
 fi
 
 # Check if hostName (first argument) is provided
-if [[ -z "$1" ]]; then
+if [ -z "$1" ]; then
     echo "Error: Missing required argument <hostName>."
     print_usage
     exit 1
 fi
 
-if [[ "$1" == "GLOBAL" ]]; then
+if [ "$1" = "GLOBAL" ]; then
     echo "Error: Host name \"GLOBAL\" is reserved!"
     print_usage
     exit 2
@@ -62,7 +62,7 @@ hostname="$1"
 shift # Shift to process optional arguments
 
 
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
     case "$1" in
         --debug|-d)
             debug=true
@@ -86,7 +86,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Check for permission
-if [[ -z "$SUDO_USER" ]]; then
+if [ -z "$SUDO_USER" ]; then
     echo "Error: Please call this script with sudo"
     print_usage
     exit 2
@@ -94,7 +94,7 @@ fi
 
 
 # Check if host is already registered
-if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$force" == false ]; then
+if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$force" = false ]; then
     echo "Error: Host \"$hostname\" already registered. Use --force/-f to overwrite"
     print_usage
     exit 3
@@ -108,7 +108,7 @@ print_debug "Copied host presets to $path_to_dotfiles/hosts/$hostname"
 mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
 
 # Regenerate config
-if [[ "$no_new_config" ]]; then
+if [ "$no_new_config" = true ]; then
     cp "/etc/nixos/configuration.nix" "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
     print_debug "Copied configuration.nix to $path_to_dotfiles/hosts/$hostname"
     sudo nixos-generate-config --show-hardware-config > "$path_to_dotfiles/hosts/$hostname/hostConfigs/hardware-configuration.nix"

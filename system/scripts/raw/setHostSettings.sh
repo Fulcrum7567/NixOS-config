@@ -8,6 +8,7 @@ path_to_dotfiles="$PWD/../../../"
 
 # Function to display usage
 print_usage_force() {
+	echo
 	echo "A file named hostSettings.nix already has to exist"
 	echo "Run createBasicHostSettings.sh to create it"
     echo "Usage: $0 <hostName> [--debug|-d] [--force|-f]"
@@ -21,27 +22,28 @@ print_usage_force() {
 }
 
 print_usage() {
-    if [ "$no_usage" == false ]; then
+    if [ "$no_usage" = false ]; then
         print_usage_force
     fi
 }
 
 print_debug() {
-    if [[ "$debug" == true ]]; then
+    if [ "$debug" = true ]; then
         echo "[Debug]: $1"
     fi
 }
 
 
 # Check for --help/-h first
-if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+if [ "$1" = "--help" -o "$1" = "-h" ]; then
     print_usage_force
 fi
 
 # Validate the number of arguments
-if [[ $# -lt 1 ]]; then
+if [ $# -lt 1 ]; then
     echo "Error: Missing required <hostName> argument."
     print_usage
+	exit 2
 fi
 
 # Parse positional arguments
@@ -49,7 +51,7 @@ host_name="$1"
 shift # Shift to process other options
 
 # Parse optional flags
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
     case "$1" in
         --debug|-d)
             debug=true
