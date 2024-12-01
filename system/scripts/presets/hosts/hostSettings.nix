@@ -1,6 +1,6 @@
 {
-	system = "null";
-	systemState = "null";
-	defaultPackageState = "null";
-	gpuManufacturer = "null";
+	system = null;
+	systemState = null;
+	defaultPackageState = null;
+	gpuManufacturer = null;
 }

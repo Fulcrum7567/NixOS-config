@@ -70,9 +70,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-[ -f "$path_to_dotfiles/hosts/currentHost.nix" ] && already_exists=true || already_exists=false
-print_debug "hosts/currentHost.nix already exists: $already_exists"
-
 
 if [ "$already_exists" == true -a "$force" == false ]; then
     echo "Error: Current host is already set. Use --force / -f to overwrite"

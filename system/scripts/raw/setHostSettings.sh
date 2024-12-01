@@ -8,6 +8,8 @@ path_to_dotfiles="$PWD/../../../"
 
 # Function to display usage
 print_usage_force() {
+	echo "A file named hostSettings.nix already has to exist"
+	echo "Run createBasicHostSettings.sh to create it"
     echo "Usage: $0 <hostName> [--debug|-d] [--force|-f]"
     echo "       $0 [--help|-h]"
     echo
@@ -64,13 +66,24 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+if [ ! -d "$path_to_dotfiles/hosts/$host_name/" ]; then
+	echo "Error: Host with name \"$host_name\" is not yet registered."
+	print_usage
+	exit 2
+fi
+
+
 if [ ! -f "$path_to_dotfiles/hosts/$host_name/hostSettings.nix" ]; then
-    
+    echo "Error: No host settings exist yet. Please use createBasicHostSettings.sh first!"
+	print_usage
+	exit 2
 fi
 
 # Files
-FILE1="outputFile.nix"
-FILE2="defaultFile.nix"
+FILE1="$path_to_dotfiles/hosts/$host_name/hostSettings.nix"
+print_debug "Output file set to $FILE1"
+FILE2="$path_to_dotfiles/system/scripts/presets/hosts/hostSettings.nix"
+print_debug "Default file set to $FILE2"
 
 # Function to get the value of an option in a Nix file
 get_option_value() {
@@ -78,6 +91,7 @@ get_option_value() {
     option="$2"
     # Extract value, remove quotes, and strip whitespace
     grep "$option = " "$file" | sed -n "s/.*$option = \(.*\);/\1/p" | tr -d '"' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+	print_debug "Extracted option \"$option\" from file \"$file\""
 }
 
 # Function to set or update an option in file1
@@ -86,9 +100,11 @@ set_option_in_file1() {
     value="$2"
     if grep -q "$option" "$FILE1"; then
         sed -i "s/$option = .*/$option = \"$value\";/" "$FILE1"
+		print_debug "Set option \"$option\" to \"$value\""
     else
         # Add the new option before the closing bracket
         sed -i "/{/a\  $option = \"$value\";" "$FILE1"
+		print_debug "Added option \"$option\" with value \"$value\""
     fi
 }
 
@@ -136,4 +152,3 @@ for option in $options; do
     set_option_in_file1 "$option" "$value"
 done
 
-echo "File1 has been updated!"
