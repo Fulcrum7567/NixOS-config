@@ -41,7 +41,7 @@ fi
 # Validate the number of arguments
 if [[ $# -lt 1 ]]; then
     echo "Error: Missing required <hostName> argument."
-    print_usage_force
+    print_usage
 fi
 
 # Parse positional arguments
