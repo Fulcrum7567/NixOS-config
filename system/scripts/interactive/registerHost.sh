@@ -53,13 +53,13 @@ while [ $# -gt 0 ]; do
             ;;
 		--hostname|-n)
 			if [ -n "$2" ]; then
-				hostname="$2"
+				host_name="$2"
 				shift
-			  else
+			else
 				echo "Error: --hostname or -n requires a name."
-				usage
-			  fi
-			  ;;
+				print_usage
+			fi
+			;;
         *)
             echo "Error: Unknown argument '$1'."
             print_usage
