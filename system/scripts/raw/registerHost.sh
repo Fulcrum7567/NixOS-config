@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 debug=false
 no_new_config=false
@@ -105,7 +105,9 @@ fi
 sudo -u "$SUDO_USER" cp -r "$path_to_dotfiles/system/scripts/presets/hosts/hostName" "$path_to_dotfiles/hosts/$hostname"
 print_debug "Copied host presets to $path_to_dotfiles/hosts/$hostname"
 
-mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
+if [ ! -d "$path_to_dotfiles/hosts/$hostname/hostConfigs/" ]; then
+	mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
+fi
 
 # Regenerate config
 if [ "$no_new_config" = true ]; then
