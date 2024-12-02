@@ -190,6 +190,8 @@
 				system = hostSettings.system;
 				modules = [
 					./hosts/GLOBAL/additionalConfig.nix
+					./hosts/${currentHost}/additionalConfig.nix
+					./hosts/${currentHost}/hostConfigs/configuration.nix
 				];
 				specialArgs = {
 					inherit currentHost hostSettings;
@@ -205,6 +207,7 @@
 				inherit pkgs;
 				modules = [
 					./hosts/GLOBAL/additionalHome.nix
+					./hosts/${currentHost}/additionalHome.nix
 				];
 				extraSpecialArgs = {
 				inherit currentHost hostSettings;
