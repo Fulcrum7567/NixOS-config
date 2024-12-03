@@ -106,9 +106,9 @@ while [ $repeat ]; do
 		get_confirmation "Do you want to overwrite it?"
 		if [ "$?" = 0 ]; then
 			force=true
+			cmd_force="--force"
 		else
 			cmd_hostname=""
-			cmd_force="--force"
 			repeat=true
 		fi
 	fi
