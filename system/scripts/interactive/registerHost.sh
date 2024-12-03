@@ -1,11 +1,14 @@
 #!/bin/sh
 
-hostname=""
 debug=false
-no_new_config=false
-force=false
 no_usage=false
 path_to_dotfiles="$PWD/../../../"
+
+cmd_hostname=""
+cmd_debug=""
+cmd_no_new_config=""
+cmd_force=""
+cmd_no_usage=""
 
 print_usage_force() {
     echo "Usage: $0 [options]"
@@ -61,19 +64,21 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --debug|-d)
             debug=true
+			cmd_debug="--debug"
             ;;
         --no-new-config)
-            no_new_config=true
+            cmd_no_new_config="--no-new-config"
             ;;
         --force|-f)
-            force=true
+            cmd_force="--force"
             ;;
         --no-usage|-u)
             no_usage=true
+			cmd_no_usage="--no-usage"
             ;;
 		--hostname|-n)
 			if [ -n "$2" ]; then
-				hostname="$2"
+				cmd_hostname="$2"
 				shift
 			else
 				echo "Error: --hostname or -n requires a name."
@@ -92,20 +97,22 @@ done
 repeat=true
 while [ $repeat ]; do
 	repeat=false
-	read -p "What is the name of the host? " $hostname
-	if [ -z "$hostname" ]; then
+	read -p "What is the name of the host? " $cmd_hostname
+	if [ -z "$cmd_hostname" ]; then
 		echo "Error: Hostname must not be empty!"
 		repeat=true
-	elif [ -d "$path_to_dotfiles/hosts/$hostname/" ]; then
-		echo "Warning: A host with the name $hostname is already registered."
+	elif [ -d "$path_to_dotfiles/hosts/$cmd_hostname/" ]; then
+		echo "Warning: A host with the name $cmd_hostname is already registered."
 		get_confirmation "Do you want to overwrite it?"
 		if [ "$?" = 0 ]; then
 			force=true
 		else
-			hostname=""
-			force=false
+			cmd_hostname=""
+			cmd_force="--force"
 			repeat=true
 		fi
 	fi
 done
+
+
 	
