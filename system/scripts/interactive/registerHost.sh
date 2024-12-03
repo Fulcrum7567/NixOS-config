@@ -95,9 +95,11 @@ while [ $# -gt 0 ]; do
 done
 
 repeat=true
-while [ $repeat ]; do
+while [ "$repeat" = true ]; do
 	repeat=false
-	read -p "What is the name of the host? " $cmd_hostname
+	if [ -z "$cmd_hostname" ]; then
+		read -p "What is the name of the host? " cmd_hostname
+	fi
 	if [ -z "$cmd_hostname" ]; then
 		echo "Error: Hostname must not be empty!"
 		repeat=true
