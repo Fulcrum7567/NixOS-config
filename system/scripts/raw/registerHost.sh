@@ -103,7 +103,7 @@ fi
 # Create host
 #mkdir "$path_to_dotfiles/hosts/$hostname"
 sudo -u "$SUDO_USER" cp -r "$path_to_dotfiles/system/scripts/presets/hosts/hostName" "$path_to_dotfiles/hosts/$hostname"
-print_debug "Copied host presets to $path_to_dotfiles/hosts/$hostname"
+print_debug "Copied host presets to \"$(realpath $path_to_dotfiles/hosts/$hostname)\""
 
 if [ ! -d "$path_to_dotfiles/hosts/$hostname/hostConfigs/" ]; then
 	mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
@@ -112,10 +112,10 @@ fi
 # Regenerate config
 if [ "$no_new_config" = true ]; then
     cp "/etc/nixos/configuration.nix" "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
-    print_debug "Copied configuration.nix to $path_to_dotfiles/hosts/$hostname"
+    print_debug "Copied configuration.nix to \"$(realpath $path_to_dotfiles/hosts/$hostname)\""
     sudo nixos-generate-config --show-hardware-config > "$path_to_dotfiles/hosts/$hostname/hostConfigs/hardware-configuration.nix"
-    print_debug "Generated hardware-configuration.nix in $path_to_dotfiles/hosts/$hostname/hostConfigs/"
+    print_debug "Generated hardware-configuration.nix in \"$(realpath $path_to_dotfiles/hosts/$hostname/hostConfigs/)\""
 else
-    sudo nixos-generate-config --force --dir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
-    print_debug "Generated hardware-configuration and configuration.nix in $path_to_dotfiles/hosts/$hostname/hostConfigs/"
+    sudo nixos-generate-config --force --dir $(realpath "$path_to_dotfiles/hosts/$hostname/hostConfigs/")
+    print_debug "Generated hardware-configuration and configuration.nix in \"$(realpath $path_to_dotfiles/hosts/$hostname/hostConfigs/)\""
 fi

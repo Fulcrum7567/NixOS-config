@@ -94,6 +94,18 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+
+if [ -z "$SUDO_USER" ]; then
+    echo "Warning: This script needs sudo rights!"
+fi
+
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script needs sudo rights!"
+    print_usage
+    exit 2
+	
+fi
+
 repeat=true
 while [ "$repeat" = true ]; do
 	repeat=false
@@ -124,4 +136,9 @@ if [ -z "$cmd_no_new_config" ]; then
 	fi
 fi
 
-	
+
+exec_command="$(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh") $cmd_hostname $cmd_no_new_config $cmd_debug $cmd_force $cmd_no_usage"
+
+print_debug "Executing command: $exec_command"
+
+sudo sh $exec_command

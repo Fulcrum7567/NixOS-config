@@ -84,9 +84,9 @@ if [ -f "$path_to_dotfiles/hosts/$host_name/hostSettings.nix" -a "$force" == fal
 fi
 
 file_to_write="$path_to_dotfiles/hosts/$host_name/hostSettings.nix"
-print_debug "file to write set to \"$file_to_write\""
+print_debug "file to write set to \"$(realpath $file_to_write)\""
 hc_file="$path_to_dotfiles/hosts/$host_name/hostConfigs/hardware-configuration.nix"
-print_debug "hardware-configuration.nix file located at \"$hc_file\""
+print_debug "hardware-configuration.nix file located at \"$(realpath $hc_file)\""
 
 if [ ! -f "$hc_file" ]; then
 	echo "Error: \"$host_name\" has no hardware-configuration.nix file."

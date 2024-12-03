@@ -82,10 +82,10 @@ if [ ! -f "$path_to_dotfiles/hosts/$host_name/hostSettings.nix" ]; then
 fi
 
 # Files
-FILE1="$path_to_dotfiles/hosts/$host_name/hostSettings.nix"
-print_debug "Output file set to $FILE1"
-FILE2="$path_to_dotfiles/system/scripts/presets/hosts/hostSettings.nix"
-print_debug "Default file set to $FILE2"
+FILE1="$(realpath "$path_to_dotfiles/hosts/$host_name/hostSettings.nix")"
+print_debug "Output file set to \"$FILE1\""
+FILE2="$(realpath "$path_to_dotfiles/system/scripts/presets/hosts/hostSettings.nix")"
+print_debug "Default file set to \"$FILE2\""
 
 # Function to get the value of an option in a Nix file
 get_option_value() {

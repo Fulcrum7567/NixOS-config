@@ -79,7 +79,7 @@ fi
 
 if [ "$already_exists" == false ]; then
     cp "$path_to_dotfiles/system/scripts/presets/hosts/currentHost.nix" "$path_to_dotfiles/hosts/"
-    print_debug "Copied currentHost.nix to $path_to_dotfiles/hosts/"
+    print_debug "Copied currentHost.nix to \"$(realpath $path_to_dotfiles/hosts/)\""
 fi
 
 sed -i 's/currentHost = "[^"]*";/currentHost = "'"$host_name"'";/' "$path_to_dotfiles/hosts/currentHost.nix"
