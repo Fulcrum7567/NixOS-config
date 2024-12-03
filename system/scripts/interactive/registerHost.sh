@@ -115,4 +115,11 @@ while [ $repeat ]; do
 done
 
 
+if [ -z "$cmd_no_new_config" ]; then
+	get_confirmation "Do you want to copy your existing configuration.nix file from /etc/nixos/?"
+	if [ "$?" = 0 ]; then
+		cmd_no_new_config="--no-new-config"
+	fi
+fi
+
 	
