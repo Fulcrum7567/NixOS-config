@@ -2,8 +2,9 @@
 
 debug=false
 no_new_config=false
-force=false
+overwrite=false
 no_usage=false
+repair=false
 path_to_dotfiles="$PWD/../../../"
 
 
@@ -14,7 +15,8 @@ print_usage_force() {
     echo "Options:"
     echo "  --debug, -d         Enable debug mode"
     echo "  --no-new-config     Don't regenerate \"configuration.nix\", \"hardware-configuration.nix\" will always be regenerated."
-    echo "  --force, -f         Overwrite host if it already exists"
+    echo "  --overwrite, -o     Overwrite host if it already exists"
+	echo "  --repair, -r		Repair host"
     echo "  --no-usage, -u      Don't show usage after an error"
     echo "  --help, -h          Display this help message and exit"
     echo
@@ -70,9 +72,12 @@ while [ $# -gt 0 ]; do
         --no-new-config)
             no_new_config=true
             ;;
-        --force|-f)
-            force=true
+        --overwrite|-o)
+            overwrite=true
             ;;
+		--repair|-r)
+			repair=true
+			;;
         --no-usage|-u)
             no_usage=true
             ;;
@@ -85,6 +90,19 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ "$repair" = true -a "$overwrite" = true ]; then
+	echo "Error: --overwrite and --repair can not be used together."
+	print_usage
+	exit 2
+fi
+
+# Check if host is already registered
+if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$overwrite" = false -a "$repair" = false ]; then
+    echo "Error: Host \"$hostname\" already registered. Use -o to overwrite or -r to repair"
+    print_usage
+    exit 3
+fi
+
 # Check for permission
 if [ -z "$SUDO_USER" ]; then
     echo "Error: Please call this script with sudo"
@@ -92,18 +110,24 @@ if [ -z "$SUDO_USER" ]; then
     exit 2
 fi
 
-
-# Check if host is already registered
-if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$force" = false ]; then
-    echo "Error: Host \"$hostname\" already registered. Use --force/-f to overwrite"
-    print_usage
-    exit 3
+# remove config if necessery
+if [ -d "$path_to_dotfiles/hosts/$hostname/" ]; then
+	if [ "$overwrite" = true ]; then
+		sudo rm -rf "$path_to_dotfiles/hosts/$hostname/"
+	elif [ "$repair" = true ]; then
+		sudo rm -rf "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
+		sudo rm "$path_to_dotfiles/hosts/$hostname/hostSettings.nix"
+	fi
 fi
 
-# Create host
-#mkdir "$path_to_dotfiles/hosts/$hostname"
-sudo -u "$SUDO_USER" cp -r "$path_to_dotfiles/system/scripts/presets/hosts/hostName" "$path_to_dotfiles/hosts/$hostname"
-print_debug "Copied host presets to \"$(realpath $path_to_dotfiles/hosts/$hostname)\""
+
+if [ "$repair" = false ]; then
+	# Create host
+	#mkdir "$path_to_dotfiles/hosts/$hostname"
+	sudo -u "$SUDO_USER" cp -r "$path_to_dotfiles/system/scripts/presets/hosts/hostName" "$path_to_dotfiles/hosts/$hostname"
+	print_debug "Copied host presets to \"$(realpath $path_to_dotfiles/hosts/$hostname)\""
+fi
+
 
 if [ ! -d "$path_to_dotfiles/hosts/$hostname/hostConfigs/" ]; then
 	mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
