@@ -20,10 +20,6 @@ print_usage_force() {
     echo "  --no-usage, -u      Don't show usage after an error"
     echo "  --help, -h          Display this help message and exit"
     echo
-    echo "Examples:"
-    echo "  $0 myHost --debug --skip-confirm"
-    echo "  $0 myHost -d -s"
-    echo "  $0 --help"
 }
 
 print_usage() {

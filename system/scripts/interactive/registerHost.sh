@@ -35,23 +35,7 @@ print_debug() {
     fi
 }
 
-get_confirmation() {
-	local prompt_message="$1"
-	while true; do
-		read -rp "$prompt_message (y/n): " choice
-		case "$choice" in
-			[yY] | [yY][eE][sS] )
-				return 0
-				;;
-			[nN] | [nN][oO] )
-				return 1
-				;;
-			* )
-				echo "Please answer yes or no."
-				;;
-		esac
-	done
-}
+
 
 if [ "$1" = "--help" -o "$1" = "-h" ]; then
     print_usage_force
@@ -106,31 +90,11 @@ if ! sudo -v 2>/dev/null; then
 	
 fi
 
-repeat=true
-while [ "$repeat" = true ]; do
-	repeat=false
-	if [ -z "$cmd_hostname" ]; then
-		read -p "What is the name of the host? " cmd_hostname
-	fi
-	if [ -z "$cmd_hostname" ]; then
-		echo "Error: Hostname must not be empty!"
-		repeat=true
-	elif [ -d "$path_to_dotfiles/hosts/$cmd_hostname/" ]; then
-		echo "Warning: A host with the name $cmd_hostname is already registered."
-		get_confirmation "Do you want to overwrite it?"
-		if [ "$?" = 0 ]; then
-			force=true
-			cmd_force="--force"
-		else
-			cmd_hostname=""
-			repeat=true
-		fi
-	fi
-done
+
 
 
 if [ -z "$cmd_no_new_config" ]; then
-	get_confirmation "Do you want to copy your existing configuration.nix file from /etc/nixos/?"
+	sh "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh" "Do you want to copy your existing configuration.nix file from /etc/nixos/?" --default no --no-usage
 	if [ "$?" = 0 ]; then
 		cmd_no_new_config="--no-new-config"
 	fi

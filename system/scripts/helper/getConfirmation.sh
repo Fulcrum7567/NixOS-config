@@ -29,6 +29,7 @@ print_debug() {
 DEBUG=false
 DEFAULT=""
 MESSAGE=""
+no_usage=false
 
 # Parse arguments
 while [ "$#" -gt 0 ]; do
@@ -41,6 +42,10 @@ while [ "$#" -gt 0 ]; do
             DEBUG=true
             shift
             ;;
+		--no-usage|-u)
+			no_usage=true
+			shift
+			;;
         --default)
             if [ -n "$2" ]; then
                 # Normalize to lowercase for validation
@@ -79,7 +84,7 @@ done
 # Validate message
 if [ -z "$MESSAGE" ]; then
     echo "Error: <message> is required."
-    print_help
+    print_usage
     exit 1
 fi
 
