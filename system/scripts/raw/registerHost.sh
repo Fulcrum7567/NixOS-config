@@ -95,13 +95,17 @@ fi
 
 # Check if host is already registered
 if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$force" = false ]; then
-    echo "Error: Host \"$hostname\" already registered. Use --force/-f to overwrite"
-    print_usage
-    exit 3
+    if [ "$force" = true ]; then
+        rm -rf "$path_to_dotfiles/hosts/$hostname/"
+    else
+        echo "Error: Host \"$hostname\" already registered. Use --force/-f to overwrite"
+        print_usage
+        exit 3
+    fi
 fi
 
 # Create host
-#mkdir "$path_to_dotfiles/hosts/$hostname"
+mkdir "$path_to_dotfiles/hosts/$hostname"
 sudo -u "$SUDO_USER" cp -r "$path_to_dotfiles/system/scripts/presets/hosts/hostName" "$path_to_dotfiles/hosts/$hostname"
 print_debug "Copied host presets to \"$(realpath $path_to_dotfiles/hosts/$hostname)\""
 
