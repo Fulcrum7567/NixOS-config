@@ -10,6 +10,8 @@ print_usage_force() {
     echo "Usage: $0 <hostname> [options]"
     echo
     echo "Options:"
+    echo "  --no-host-configs   Don't restore hostConfigs/"
+    echo "  --no-host-settings  Don't restore hostSettings.nix"
     echo "  --debug, -d         Enable debug mode"
     echo "  --no-usage, -u      Don't show usage after an error"
     echo "  --help, -h          Display this help message and exit"
@@ -61,7 +63,7 @@ while [ $# -gt 0 ]; do
         --no-usage|-u)
             no_usage=true
             ;;
-        --no-host-config)
+        --no-host-configs)
 			no_host_config=true
 			;;
 		--no-host-settings)
@@ -83,6 +85,25 @@ if [ ! -d $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/") ]; then
 	exit 1
 fi
 
+# Check for permission
+if [ -z "$SUDO_USER" ]; then
+    echo "Error: Please call this script with sudo"
+    print_usage
+    exit 2
+fi
 
-rsync -a --exclude="hostConfigs/" --exclude="hostSettings.nix" $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/") $(realpath $path_to_dotfiles/hosts/$hostname/)
 
+sudo -u "$SUDO_USER" rsync -a --exclude="hostConfigs/" --exclude="hostSettings.nix" "$(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/")" "$(realpath "$path_to_dotfiles/hosts/")"
+print_debug "Copied backup files except for hostConfigs/ and hostSettings.nix"
+
+
+if [ "$no_host_config" = false ]; then
+    sudo -u "$SUDO_USER" mkdir -p $(realpath $path_to_dotfiles/hosts/$hostname/hostConfigs/)
+    sudo cp -r "$(realpath $path_to_dotfiles/system/backup/hosts/$hostname/hostConfigs)"/* "$(realpath $path_to_dotfiles/hosts/$hostname/hostConfigs/)"
+    print_debug "Copied hostConfigs/"
+fi
+
+if [ "$no_host_settings" = false ]; then
+    sudo -u "$SUDO_USER" cp "$(realpath $path_to_dotfiles/system/backup/hosts/$hostname/hostSettings.nix)" "$(realpath $path_to_dotfiles/hosts/$hostname/)"
+    print_debug "Copied hostSettings.nix"
+fi
