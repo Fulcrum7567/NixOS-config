@@ -2,14 +2,12 @@
 
 debug=false
 no_usage=false
-full=false
 path_to_dotfiles="$PWD/../../../"
 
 print_usage_force() {
     echo "Usage: $0 <hostname> [options]"
     echo
     echo "Options:"
-    echo "  --full, -f          Also replace hostSettings.nix"
     echo "  --debug, -d         Enable debug mode"
     echo "  --no-usage, -u      Don't show usage after an error"
     echo "  --help, -h          Display this help message and exit"
@@ -68,9 +66,6 @@ while [ $# -gt 0 ]; do
         --debug|-d)
             debug=true
             ;;
-        --full|-f)
-            full=true
-            ;;
         --no-usage|-u)
             no_usage=true
             ;;
@@ -96,13 +91,9 @@ if [ -z "$SUDO_USER" ]; then
     exit 2
 fi
 
-sudo -u "$SUDO_USER" mkdir -p "$(realpath $path_to_dotfiles/system/backup/$hostname/)"
-if [ "$full" = false ]; then
-	sudo -u "$SUDO_USER" rsync -av --exclude='hostConfigs' $(realpath $path_to_dotfiles/hosts/$hostname/) $(realpath $path_to_dotfiles/system/backup/$hostname/)
-else
-    sudo -u "$SUDO_USER" rsync -av --exclude='hostConfigs' --exclude="hostSettings.nix" $(realpath $path_to_dotfiles/hosts/$hostname/) $(realpath $path_to_dotfiles/system/backup/$hostname/)
-fi
+sudo -u "$SUDO_USER" mkdir -p "$path_to_dotfiles/system/backup/hosts/$hostname/"
+print_debug "Created backup folder at $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/")"
+cp -r "$(realpath $path_to_dotfiles/hosts/$hostname)"/* "$(realpath $path_to_dotfiles/system/backup/hosts/$hostname)"
 
-sudo rm -rf $(realpath $path_to_dotfiles/hosts/$hostname/)
-
+print_debug "Copied files from "$(realpath $path_to_dotfiles/hosts/$hostname)"/* to $(realpath $path_to_dotfiles/system/backup/hosts/$hostname)"
 
