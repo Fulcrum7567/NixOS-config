@@ -2,6 +2,8 @@
 
 debug=false
 no_usage=false
+no_host_config=false
+no_host_settings=false
 path_to_dotfiles="$PWD/../../../"
 
 print_usage_force() {
@@ -59,6 +61,12 @@ while [ $# -gt 0 ]; do
         --no-usage|-u)
             no_usage=true
             ;;
+        --no-host-config)
+			no_host_config=true
+			;;
+		--no-host-settings)
+			no_host_settings=true
+			;;
         *)
             echo "Error: Unknown argument '$1'."
             print_usage
@@ -68,22 +76,12 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ ! -d "$path_to_dotfiles/hosts/$hostname" ]; then
-	echo "Error: There is no host registered under the name \"$hostname\"."
+
+if [ ! -d $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/") ]; then
+	echo "Error: There is no backup for \"$hostname\""
 	print_usage
 	exit 1
 fi
 
-# Check for permission
-if [ -z "$SUDO_USER" ]; then
-    echo "Error: Please call this script with sudo"
-    print_usage
-    exit 2
-fi
 
-sudo -u "$SUDO_USER" mkdir -p "$path_to_dotfiles/system/backup/hosts/$hostname/"
-print_debug "Created backup folder at $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/")"
-cp -r "$(realpath $path_to_dotfiles/hosts/$hostname)"/* "$(realpath $path_to_dotfiles/system/backup/hosts/$hostname)"
-
-print_debug "Copied files from "$(realpath $path_to_dotfiles/hosts/$hostname)"/* to $(realpath $path_to_dotfiles/system/backup/hosts/$hostname)"
 
