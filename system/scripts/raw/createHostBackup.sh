@@ -96,7 +96,13 @@ if [ -z "$SUDO_USER" ]; then
     exit 2
 fi
 
-
+sudo -u "$SUDO_USER" mkdir -p "$(realpath $path_to_dotfiles/system/backup/$hostname/)"
 if [ "$full" = false ]; then
-	
+	sudo -u "$SUDO_USER" rsync -av --exclude='hostConfigs' $(realpath $path_to_dotfiles/hosts/$hostname/) $(realpath $path_to_dotfiles/system/backup/$hostname/)
+else
+    sudo -u "$SUDO_USER" rsync -av --exclude='hostConfigs' --exclude="hostSettings.nix" $(realpath $path_to_dotfiles/hosts/$hostname/) $(realpath $path_to_dotfiles/system/backup/$hostname/)
 fi
+
+sudo rm -rf $(realpath $path_to_dotfiles/hosts/$hostname/)
+
+

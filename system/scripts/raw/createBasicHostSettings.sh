@@ -102,10 +102,10 @@ if [ -z "$systemValue" ]; then
 fi
 
 # write file
-echo "{\n" > $file_to_write
+echo "{" > $file_to_write
 print_debug "Created new file"
 
-echo "  system = \"$systemValue\";\n" >> $file_to_write
+echo "  system = \"$systemValue\";" >> $file_to_write
 print_debug "Wrote system in file"
 
 echo "}" >> $file_to_write
