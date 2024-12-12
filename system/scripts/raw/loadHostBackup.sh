@@ -84,4 +84,5 @@ if [ ! -d $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/") ]; then
 fi
 
 
+rsync -a --exclude="hostConfigs/" --exclude="hostSettings.nix" $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/") $(realpath $path_to_dotfiles/hosts/$hostname/)
 
