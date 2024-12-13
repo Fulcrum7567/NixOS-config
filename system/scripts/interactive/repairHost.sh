@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 debug=false
 no_usage=false
 path_to_dotfiles="$PWD/../../../"
@@ -33,6 +34,12 @@ print_debug() {
     if [ "$debug" = true ]; then
         echo "[Debug]: $1"
     fi
+}
+
+get_hostname() {
+	while [ -z "$cmd_hostname" ]; do
+		read -p "What host do you want to repair? " cmd_hostname
+	done
 }
 
 
@@ -89,19 +96,14 @@ if ! sudo -v 2>/dev/null; then
     exit 2
 fi
 
-
-
-
-if [ -z "$cmd_no_new_config" ]; then
-	sh "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh" "Do you want to copy your existing configuration.nix file from /etc/nixos/?" --default no --no-usage
-	if [ "$?" = 0 ]; then
-		cmd_no_new_config="--no-new-config"
-	fi
+if [ -z "$cmd_hostname" ]; then
+	get_hostname
 fi
 
+while [ ! -d $(realpath "$path_to_dotfiles/hosts/$cmd_hostname") ]; do
+	echo "Error: There is no host registered with the name \"$cmd_hostname\""
+	cmd_hostname=""
+	get_hostname
+done
 
-exec_command="$(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh") $cmd_hostname $cmd_no_new_config $cmd_debug $cmd_force $cmd_no_usage"
 
-print_debug "Executing command: $exec_command"
-
-sudo sh $exec_command

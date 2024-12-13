@@ -75,8 +75,7 @@
 		
 		# define stable pkgs
 		pkgs-stable = import inputs.nixpkgs-stable {
-			system = 
-			.system;
+			system = hostSettings.system;
 			config = {
 				allowUnfree = true;
 				allowUnfreePredicate = (_: true);
