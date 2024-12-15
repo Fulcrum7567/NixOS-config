@@ -94,7 +94,7 @@ fi
 
 
 # Check if host is already registered
-if [ -d "$path_to_dotfiles/hosts/$hostname/" -a "$force" = false ]; then
+if [ -d "$path_to_dotfiles/hosts/$hostname/" ]; then
     if [ "$force" = true ]; then
         rm -rf "$path_to_dotfiles/hosts/$hostname/"
     else

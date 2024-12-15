@@ -10,8 +10,8 @@ print_usage_force() {
     echo "Usage: $0 <hostname> [options]"
     echo
     echo "Options:"
-    echo "  --no-host-configs   Don't restore hostConfigs/"
-    echo "  --no-host-settings  Don't restore hostSettings.nix"
+    echo "  --no-configs        Don't restore hostConfigs/"
+    echo "  --no-settings       Don't restore hostSettings.nix"
     echo "  --debug, -d         Enable debug mode"
     echo "  --no-usage, -u      Don't show usage after an error"
     echo "  --help, -h          Display this help message and exit"
@@ -63,10 +63,10 @@ while [ $# -gt 0 ]; do
         --no-usage|-u)
             no_usage=true
             ;;
-        --no-host-configs)
+        --no-configs)
 			no_host_config=true
 			;;
-		--no-host-settings)
+		--no-settings)
 			no_host_settings=true
 			;;
         *)

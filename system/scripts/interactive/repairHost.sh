@@ -4,21 +4,23 @@
 debug=false
 no_usage=false
 path_to_dotfiles="$PWD/../../../"
+full=false
+no_new_settings=false
 
 cmd_hostname=""
 cmd_debug=""
 cmd_no_new_config=""
 cmd_force=""
 cmd_no_usage=""
+cmd_full=""
 
 print_usage_force() {
     echo "Usage: $0 [options]"
     echo
     echo "Options:"
 	echo "  --hostname, -h <hostName>	Pre set host name"
+    echo "  --full, -f                  Also repair host settings"
     echo "  --debug, -d         		Enable debug mode"
-    echo "  --no-new-config     		Don't regenerate \"configuration.nix\", \"hardware-configuration.nix\" will always be regenerated."
-    echo "  --force, -f         		Overwrite host if it already exists"
     echo "  --no-usage, -u      		Don't show usage after an error"
     echo "  --help, -h          		Display this help message and exit"
     echo
@@ -57,15 +59,16 @@ while [ $# -gt 0 ]; do
             debug=true
 			cmd_debug="--debug"
             ;;
-        --no-new-config)
-            cmd_no_new_config="--no-new-config"
-            ;;
-        --force|-f)
-            cmd_force="--force"
+        --full|-f)
+            full=true
+            cmd_full="--no-settings"
             ;;
         --no-usage|-u)
             no_usage=true
 			cmd_no_usage="--no-usage"
+            ;;
+        --no-new-settings)
+            no_new_settings=true
             ;;
 		--hostname|-n)
 			if [ -n "$2" ]; then
@@ -106,4 +109,40 @@ while [ ! -d $(realpath "$path_to_dotfiles/hosts/$cmd_hostname") ]; do
 	get_hostname
 done
 
+if [ -z "$cmd_full" ]; then
+    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to reset the host settings also?" --default no
+    if [ "$?" = 0 ]; then
+        cmd_full="--no-settings"
+        full=true
+    elif [ ! "$?" = 1 ]; then
+        print_debug "Cancelled..."
+        exit 2
+    fi
+fi
 
+# create host backup
+sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/createHostBackup.sh") "$cmd_hostname" $cmd_debug --no-usage
+print_debug "Host backup generated"
+
+# delete host completely
+sudo rm -rf $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/")
+print_debug "Host \"$cmd_hostname\" deleted"
+
+# regenerate host
+sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh") "$cmd_hostname" --force $cmd_debug --no-usage
+print_debug "Regenerated host"
+
+
+sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/loadHostBackup.sh") "$cmd_hostname" $cmd_debug --no-usage --no-configs $cmd_full
+print_debug "Restored host backup"
+
+if [ "$full" = true -a "$no_new_settings" = false ]; then
+    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to regenerate the host settings?" --default yes
+    if [ ! "$?" = 0 ]; then
+        exit 0
+    fi
+    sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" $cmd_debug $cmd_no_usage
+    print_debug "Generated basic host settings"
+    sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" $cmd_debug $cmd_no_usage
+    print_debug "Host settings set for \"$cmd_hostname\""
+fi
