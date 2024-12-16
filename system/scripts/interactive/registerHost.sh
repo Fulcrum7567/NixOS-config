@@ -122,7 +122,7 @@ fi
 
 
 if [ -z "$cmd_no_new_config" ]; then
-	sh "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh" "Do you want to copy your existing configuration.nix file from /etc/nixos/?" --default no --no-usage
+	sh "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh" "Do you want to copy your existing configuration.nix file from /etc/nixos/?" --default no --no-usage $cmd_debug
 	if [ "$?" = 0 ]; then
 		cmd_no_new_config="--no-new-config"
 	fi
@@ -134,3 +134,14 @@ exec_command="$(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh")
 print_debug "Executing command: $exec_command"
 
 sudo sh $exec_command
+
+if [ ! -f $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/hostSettings.nix") ]; then
+    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to generate host settings?" --default yes --no-usage $cmd_debug
+    result="$?"
+    if [ "$result" = 0 ]; then
+        print_debug "Generating host settings..."
+        sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
+        sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
+        print_debug "Generated host settings"
+    fi
+fi

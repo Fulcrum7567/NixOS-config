@@ -92,8 +92,12 @@ get_option_value() {
     file="$1"
     option="$2"
     # Extract value, remove quotes, and strip whitespace
-    grep "$option = " "$file" | sed -n "s/.*$option = \(.*\);/\1/p" | tr -d '"' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
-	print_debug "Extracted option \"$option\" from file \"$file\""
+    safe_option=$(printf '%s' "$option" | sed 's/[\/&]/\\&/g')
+    grep "$safe_option = " "$file" | \
+    sed -n "s|.*$safe_option = \(.*\);|\1|p" | \
+    tr -d '"' | \
+    sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+
 }
 
 # Function to set or update an option in file1
@@ -117,6 +121,8 @@ for option in $options; do
     # Get values from both files
     value1=$(get_option_value "$FILE1" "$option")
     value2=$(get_option_value "$FILE2" "$option")
+
+    
 
     # Handle null values
     if [ "$value2" = "null" ]; then
