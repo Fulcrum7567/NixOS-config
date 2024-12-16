@@ -103,7 +103,7 @@ if [ "$no_host_config" = false ]; then
     print_debug "Copied hostConfigs/"
 fi
 
-if [ "$no_host_settings" = false ]; then
+if [ "$no_host_settings" = false -a -f $(realpath "$path_to_dotfiles/system/backup/hosts/$hostname/hostSettings.nix") ]; then
     sudo -u "$SUDO_USER" cp "$(realpath $path_to_dotfiles/system/backup/hosts/$hostname/hostSettings.nix)" "$(realpath $path_to_dotfiles/hosts/$hostname/)"
     print_debug "Copied hostSettings.nix"
 fi

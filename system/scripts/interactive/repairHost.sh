@@ -110,13 +110,18 @@ while [ ! -d $(realpath "$path_to_dotfiles/hosts/$cmd_hostname") ]; do
 done
 
 if [ -z "$cmd_full" ]; then
-    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to reset the host settings also?" --default no
-    if [ "$?" = 0 ]; then
-        cmd_full="--no-settings"
-        full=true
-    elif [ ! "$?" = 1 ]; then
-        print_debug "Cancelled..."
-        exit 2
+    if [ -f $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/hostSettings.nix") ]; then
+        sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to reset the host settings also?" --default no
+        result="$?"
+        if [ "$result" = 0 ]; then
+            cmd_full="--no-settings"
+            full=true
+        elif [ ! "$result" = 1 ]; then
+            print_debug "Cancelled..."
+            exit 2
+        fi
+    else
+        cmd_full=""
     fi
 fi
 
