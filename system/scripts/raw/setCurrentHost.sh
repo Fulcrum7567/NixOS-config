@@ -71,16 +71,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-if [ "$already_exists" == true -a "$force" == false ]; then
-    echo "Error: Current host is already set. Use --force / -f to overwrite"
-    print_usage
-    exit 2
-fi
 
-if [ "$already_exists" == false ]; then
+if [ -f $(realpath "$path_to_dotfiles/hosts/currentHost.nix") ]; then
+    if [ "$force" = false ]; then
+        echo "Error: Current host is already set. Use --force / -f to overwrite"
+        print_usage
+        exit 2
+    fi
+else
     cp "$path_to_dotfiles/system/scripts/presets/hosts/currentHost.nix" "$path_to_dotfiles/hosts/"
     print_debug "Copied currentHost.nix to \"$(realpath $path_to_dotfiles/hosts/)\""
 fi
+ 
 
 sed -i 's/currentHost = "[^"]*";/currentHost = "'"$host_name"'";/' "$path_to_dotfiles/hosts/currentHost.nix"
 print_debug "Replaced host name with $host_name"

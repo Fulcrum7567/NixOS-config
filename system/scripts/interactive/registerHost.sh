@@ -135,13 +135,24 @@ print_debug "Executing command: $exec_command"
 
 sudo sh $exec_command
 
+if ! [ -f $(realpath "$path_to_dotfiles/system/scripts/results/registerHost") -a $(cat "$path_to_dotfiles/system/scripts/results/registerHost") = "$cmd_hostname" ]; then
+    print_debug "Error: An unknown error occured"
+    exit 3
+fi
+
 if [ ! -f $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/hostSettings.nix") ]; then
-    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to generate host settings?" --default yes --no-usage $cmd_debug
+    print_debug "Generating host settings..."
+    sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
+    sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
+    print_debug "Generated host settings"
+fi
+
+if [ -f $(realpath "$path_to_dotfiles/hosts/currentsHost.nix") ]; then
+    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to set \"$cmd_hostname\" as your current host? " --default yes
     result="$?"
     if [ "$result" = 0 ]; then
-        print_debug "Generating host settings..."
-        sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
-        sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
-        print_debug "Generated host settings"
+        sh $(realpath "$path_to_dotfiles/system/scripts/raw/setCurrentHost") "$cmd_hostname" --force
+        print_debug "Set current host to \"$cmd_hostname\""
     fi
+
 fi
