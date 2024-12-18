@@ -1,0 +1,5 @@
+# ignore current host
+hosts/currentHost.nix
+
+# ignore script results
+system/scripts/results/
