@@ -37,7 +37,7 @@
 		sops-stable = {
 			url = "github:Mic92/sops-nix";
 			inputs.nixpkgs.follows = "nixpkgs-stable";
-		}
+		};
 
 		sops-unstable = {
 			url = "github:Mic92/sops-nix";
