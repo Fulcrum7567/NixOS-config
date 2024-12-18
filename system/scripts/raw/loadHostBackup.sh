@@ -4,7 +4,7 @@ debug=false
 no_usage=false
 no_host_config=false
 no_host_settings=false
-path_to_dotfiles="$PWD/../../../"
+path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
 
 print_usage_force() {
     echo "Usage: $0 <hostname> [options]"

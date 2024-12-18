@@ -4,7 +4,7 @@
 debug=false
 force=false
 no_usage=false
-path_to_dotfiles="$PWD/../../../"
+path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
 
 
 # Function to display usage
