@@ -14,6 +14,8 @@ fi
 
 nix-shell -p git --command "git clone https://github.com/Fulcrum7567/NixOS-config.git $SCRIPT_DIR"
 
+cd $SCRIPT_DIR
+
 sh $(realpath "$SCRIPT_DIR/system/scripts/interactive/registerHost.sh")
 
 if [ ! "$?" = 0 ]; then
