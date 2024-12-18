@@ -124,4 +124,5 @@ else
     print_debug "Generated hardware-configuration and configuration.nix in \"$(realpath $path_to_dotfiles/hosts/$hostname/hostConfigs/)\"" 
 fi
 
+sudo -u "$SUDO_USER" mkdir -p "$path_to_dotfiles/system/scripts/results/"
 sudo -u "$SUDO_USER" echo "$hostname" > $(realpath "$path_to_dotfiles/system/scripts/results/registerHost")
