@@ -32,4 +32,5 @@ else
 fi
 
 sh $(realpath "$SCRIPT_DIR/system/scripts/raw/setCurrentHost.sh") "$hostname"
+sh $(realpath "$SCRIPT_DIR/system/scripts/raw/gitAddAll.sh")
 git update-index --assume-unchanged $SCRIPT_DIR/hosts/currentHost.nix

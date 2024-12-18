@@ -32,6 +32,20 @@
 			url = "github:nix-community/home-manager/master";
 			inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
+
+		# sops
+		sops-stable = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs-stable";
+		}
+
+		sops-unstable = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs-unstable";
+		};
+
+
+
 	
 	};
 
@@ -126,6 +140,14 @@
 						else
 							inputs.home-manager-unstable
 						);
+
+
+		# define sops
+		sops-nix = (if (hostSettings.systemState == "stable") then
+						inputs.sops-stable
+						else
+							inputs.sops-unstable
+						);
 						
 		
 		# ╔═════════════════════════════════════════════╗
@@ -193,7 +215,7 @@
 					./hosts/${currentHost}/hostConfigs/configuration.nix
 				];
 				specialArgs = {
-					inherit currentHost hostSettings;
+					inherit currentHost hostSettings sops-nix;
 				};
 			};
 		};
@@ -209,7 +231,7 @@
 					./hosts/${currentHost}/additionalHome.nix
 				];
 				extraSpecialArgs = {
-				inherit currentHost hostSettings;
+				inherit currentHost hostSettings sops-nix;
 				};
 			};
 		};
