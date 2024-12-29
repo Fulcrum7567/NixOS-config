@@ -6,6 +6,8 @@
 	];
 
 	home.packages = with pkgs; [
+        testPackage 
+
 		# packages that use the default package state
 		neovim
 
