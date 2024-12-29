@@ -19,7 +19,7 @@ print_usage_force() {
 	echo "  --hostname, -h <hostName>	Pre set host name"
     echo "  --debug, -d         		Enable debug mode"
     echo "  --no-new-config     		Don't regenerate \"configuration.nix\", \"hardware-configuration.nix\" will always be regenerated."
-    echo "  --force, -f         		Overwrite host if it already exists"
+    echo "  --overwrite, -o       		Overwrite host if it already exists"
     echo "  --no-usage, -u      		Don't show usage after an error"
     echo "  --help, -h          		Display this help message and exit"
     echo
