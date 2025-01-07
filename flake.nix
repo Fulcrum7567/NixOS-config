@@ -213,6 +213,8 @@
 					./hosts/GLOBAL/additionalConfig.nix
 					./hosts/${currentHost}/additionalConfig.nix
 					./hosts/${currentHost}/hostConfigs/configuration.nix
+					./user/desktops/${hostSettings.desktop}/config.nix
+					./user/themes/${hostSettings.theme}/config.nix
 				];
 				specialArgs = {
 					inherit currentHost hostSettings sops-nix;
@@ -229,6 +231,9 @@
 				modules = [
 					./hosts/GLOBAL/additionalHome.nix
 					./hosts/${currentHost}/additionalHome.nix
+					./user/packages/profiles/${hostSettings.packageProfile}.nix
+					./user/desktops/${hostSettings.desktop}/home.nix
+					./user/themes/${hostSettings.theme}/home.nix
 				];
 				extraSpecialArgs = {
 				inherit currentHost hostSettings sops-nix;

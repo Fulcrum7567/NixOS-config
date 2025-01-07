@@ -5,7 +5,6 @@ no_new_config=false
 force=false
 no_usage=false
 path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
-test=false
 build=false
 no_add=false
 
@@ -46,9 +45,6 @@ while [ $# -gt 0 ]; do
         --no-new-config)
             no_new_config=true
             ;;
-        --test|-t)
-            test=true
-            ;;
         --build|-b)
             build=true
             ;;
@@ -67,29 +63,22 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ "$test" = true -a "$build" = true ]; then
-    echo "Error: The --test and --build options can not be used together"
-    print_usage
-    exit 1
-fi
 
 
-if [ -z "$SUDO_USER" ]; then
-    echo "Error: Please call this script with sudo"
+if [ -n "$SUDO_USER" ]; then
+    echo "Error: This script must not be called with sudo"
     print_usage
     exit 2
 fi
 
 if [ "$no_add" = false ]; then
-    sudo -u "$SUDO_USER" sh $(realpath "$path_to_dotfiles/system/scripts/raw/gitAddAll.sh")
+    sh $(realpath "$path_to_dotfiles/system/scripts/raw/gitAddAll.sh")
 fi
 
 
 cd $path_to_dotfiles
-if [ "$test" = true ]; then
-    sudo -u "$SUDO_USER" nixos-rebuild test --flake "$path_to_dotfiles"#system
-elif [ "$build" = true ]; then
-    sudo -u "$SUDO_USER" nixos-rebuild build --flake "$path_to_dotfiles"#system
+if [ "$build" = true ]; then
+    home-manager build --flake "$path_to_dotfiles"#user
 else
-    sudo -u "$SUDO_USER" nixos-rebuild switch --flake "$path_to_dotfiles"#system
+    home-manager switch --flake "$path_to_dotfiles"#user
 fi

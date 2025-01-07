@@ -9,6 +9,7 @@ no_usage=false
 no_edit=false
 binary=false
 pattern=""
+no_add=false
 
 
 cmd_debug=""
@@ -98,6 +99,9 @@ while [ $# -gt 0 ]; do
             ;;
         --binary|-b)
             binary=true
+            ;;
+        --no-add)
+            no_add=true
             ;;
         --group|-g)
             if [ -n "$2" ]; then
@@ -233,8 +237,8 @@ if [ -n "$cmd_group" ]; then
     sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to edit the source file?" --default yes
     if [ "$?" = 0 ]; then
         $EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix")
-        exit 0
     fi
+    git_message="[AM]: Added package \"$cmd_name\" to group \"$cmd_group\"."
 fi
 
 if [ "$binary" = true ]; then
@@ -254,12 +258,18 @@ if [ "$binary" = true ]; then
     sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to edit the source file?" --default yes
     if [ "$?" = 0 ]; then
         $EDITOR $(realpath "$path_to_dotfiles/user/packages/binaries/$cmd_name.nix")
-        exit 0
     fi
+    git_message="[AM]: Added package \"$cmd_name\" as binary."
 fi
 
-
-
+# Add changes to git
+if [ "$no_add" = false ]; then
+    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to add your changes to git?" --default yes
+    if [ "$?" = 0 ]; then
+        git add $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix")
+        git commit -m "$git_message"
+    fi
+fi
 
 
 

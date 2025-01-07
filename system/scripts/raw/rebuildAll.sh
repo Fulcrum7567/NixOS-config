@@ -46,17 +46,15 @@ while [ $# -gt 0 ]; do
         --no-new-config)
             no_new_config=true
             ;;
-        --test|-t)
-            test=true
-            ;;
         --build|-b)
             build=true
-            ;;
-        --no-add)
-            no_add=true
+            cmd_build="--build"
             ;;
         --no-usage|-u)
             no_usage=true
+            ;;
+        --no-add)
+            no_add=true
             ;;
         *)
             echo "Error: Unknown argument '$1'."
@@ -67,11 +65,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-if [ "$test" = true -a "$build" = true ]; then
-    echo "Error: The --test and --build options can not be used together"
-    print_usage
-    exit 1
-fi
 
 
 if [ -z "$SUDO_USER" ]; then
@@ -85,11 +78,5 @@ if [ "$no_add" = false ]; then
 fi
 
 
-cd $path_to_dotfiles
-if [ "$test" = true ]; then
-    sudo -u "$SUDO_USER" nixos-rebuild test --flake "$path_to_dotfiles"#system
-elif [ "$build" = true ]; then
-    sudo -u "$SUDO_USER" nixos-rebuild build --flake "$path_to_dotfiles"#system
-else
-    sudo -u "$SUDO_USER" nixos-rebuild switch --flake "$path_to_dotfiles"#system
-fi
+sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/rebuildSystem.sh") "$cmd_build"
+sudo -u "$SUDO_USER" sh $(realpath "$path_to_dotfiles/system/scripts/raw/rebuildHome.sh") "$cmd_build"

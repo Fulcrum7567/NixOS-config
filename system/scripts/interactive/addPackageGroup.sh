@@ -5,6 +5,7 @@ debug=false
 overwrite=false
 no_usage=false
 no_edit=false
+no_add=false
 
 
 cmd_debug=""
@@ -47,7 +48,16 @@ get_group() {
 			echo "Please enter a valid group name"
 		fi
 	done
+}
 
+add_to_git() {
+    if [ "$no_add" = false ]; then
+        sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to add your changes to git?" --default yes
+        if [ "$?" = 0 ]; then
+            git add $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix")
+            git commit -m "$1"
+        fi
+    fi  
 }
 
 
@@ -75,6 +85,9 @@ while [ $# -gt 0 ]; do
             ;;
         --no-edit|-e)
             no_edit=true
+            ;;
+        --no-add)
+            no_add=true
             ;;
 		--name|-n)
 			if [ -n "$2" ]; then
@@ -108,6 +121,7 @@ while [ -f $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix") -
     elif [ "$result" = 2 ]; then
         $EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix")
         print_debug "File opened for editing"
+        add_to_git "[AM]: Edited \"$cmd_group\"."
         exit 1
     else
         get_group
@@ -128,3 +142,6 @@ if [ "$no_edit" = false ]; then
         $EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$cmd_group.nix")
     fi
 fi
+
+add_to_git "[AM]: Added package group \"$cmd_group\"."
+
