@@ -104,6 +104,7 @@ if [ -f "$path_to_dotfiles/user/packages/profiles/$name.nix" ]; then
 		exit 1
 	fi
 else
+	mkdir -p $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/")
 	cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/profile.nix") "$path_to_dotfiles/user/packages/profiles/$name.nix"
 	sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to edit the file?" --default yes
 	if [ "$?" = 0 ]; then
