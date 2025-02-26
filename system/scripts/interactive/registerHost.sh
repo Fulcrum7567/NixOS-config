@@ -4,25 +4,31 @@ debug=false
 no_usage=false
 path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
 
-
-
-cmd_hostname=""
 cmd_debug=""
-overwrite_repair=""
-cmd_no_new_config=""
 cmd_no_usage=""
 
+hostname=""
+hostname_given=false
+overwrite=false
+repair=false
+copy_config=false
+
+
 print_usage_force() {
-    echo "Usage: $0 [options]"
-    echo
+    echo "Usage:" 
+    echo "  $0 [option?]"
+    echo "Or:"
+    echo "  $0 --help, -h      Show this message and exit"
+    echo ""
     echo "Options:"
-	echo "  --hostname, -h <hostName>	Pre set host name"
-    echo "  --debug, -d         		Enable debug mode"
-    echo "  --no-new-config     		Don't regenerate \"configuration.nix\", \"hardware-configuration.nix\" will always be regenerated."
-    echo "  --overwrite, -o       		Overwrite host if it already exists"
-    echo "  --no-usage, -u      		Don't show usage after an error"
-    echo "  --help, -h          		Display this help message and exit"
-    echo
+	echo "  --hostname,    -H <hostName>	  Pre set hostname"
+    echo "  --overwrite,   -o               Overwrite host if it already exists"
+    echo "  --repair,      -r               Repair host if it already exists"
+    echo "  --copy-config, -c               Copy old config from /etc/nixos"              
+    echo ""
+    echo "  --no-usage, -u                  Don't show usage after an error"
+    echo "  --debug,    -d                  Enable debug mode"
+    echo ""
 }
 
 print_usage() {
@@ -35,6 +41,18 @@ print_debug() {
     if [ "$debug" = true ]; then
         echo "[Debug]: $1"
     fi
+}
+
+print_error() {
+    echo "[Error]: $1"
+}
+
+
+is_hostname_valid() {
+    if [ -z "$(echo "$hostname" | xargs)" -o "$hostname" = "GLOBAL" ]; then
+        return 1
+    fi
+    return 0
 }
 
 
@@ -50,26 +68,30 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --debug|-d)
             debug=true
-			cmd_debug="--debug"
+            cmd_debug="--debug"
             ;;
-        --no-new-config)
-            cmd_no_new_config="--no-new-config"
-            ;;
-        --overwrite|-o)
-            overwrite_repair="--force"
-            ;;
-
         --no-usage|-u)
             no_usage=true
-			cmd_no_usage="--no-usage"
+            cmd_no_usage="--no-usage"
             ;;
-		--hostname|-n)
+        --copy-config|-c)
+            copy_config=true
+            ;;
+        --overwrite|-o)
+            overwrite=true
+            ;;
+        --repair|-r)
+            repair=true
+            ;;
+		--hostname|-H)
 			if [ -n "$2" ]; then
-				cmd_hostname="$2"
+				hostname="$2"
+                hostname_given=true
 				shift
 			else
-				echo "Error: --hostname or -n requires a name."
+				print_error "--hostname, -H requires a hostname"
 				print_usage
+                exit 1
 			fi
 			;;
         *)
@@ -81,6 +103,10 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ "$repair" = true -a "$overwrite" = true ]; then
+    print_error "--repair and --overwrite can not be used together"
+    exit 1
+fi
 
 if [ -z "$SUDO_USER" ]; then
     echo "Warning: This script needs sudo rights!"
@@ -92,67 +118,85 @@ if ! sudo -v 2>/dev/null; then
     exit 2
 fi
 
-while [ -z "$cmd_hostname" ]; do
-    read -p "What is the name of the host? " cmd_hostname
-    if [ -z "$cmd_hostname" ]; then
-        echo "Error: Hostname must not be empty"
-    elif [ "$cmd_hostname" = "GLOBAL" ]; then
-        echo "Error: The name \"GLOBAL\" is reserved"
-        cmd_hostname=""
+
+if ! is_hostname_valid && [ "$hostname_given" = true ]; then
+    print_error "Hostname \"$hostname\" is invalid"
+fi
+
+while ! is_hostname_valid; do
+    hostname=$(gum input --prompt="What is the name of the host? " --placeholder="Enter name...")
+    if [ -z "$(echo "$hostname" | xargs)" ]; then
+        print_error "Hostname must not be empty"
+        continue
+    fi
+    if [ "$hostname" = "GLOBAL" ]; then
+        print_error "The hostname \"GLOBAL\" is reserved"
+        continue
     fi
 done
 
-if [ -d $(realpath "$path_to_dotfiles/hosts/$cmd_hostname") ]; then
-    echo "Warning: A host with the name \"$cmd_hostname\" is already registered"
-    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getOption.sh") "Do you want to repair or overwrite it? " repair/r overwrite/o --default repair
-    result="$?"
-    if [ "$result" = 0 ]; then
-        print_debug "Cancelled, exiting..."
+print_debug "Hostname set to \"$hostname\""
+
+
+sh "$(realpath "$path_to_dotfiles/system/scripts/helper/isHostRegistered.sh")" "$hostname" "--basic" $cmd_debug $cmd_no_usage
+result=$?
+
+if [ $result -eq 0 -a "$repair" = false -a "$overwrite" = false ]; then
+    # exists and ok
+    echo "A host with the name \"$hostname\" already exists. Do you want to repair or overwrite it?"
+    choice=$(gum choose Repair Overwrite Cancel)
+    if [ "$choice" = "Repair" ]; then
+        repair=true
+        sh "$path_to_dotfiles/system/scripts/interactive/repairHost.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
+        if [ $? = 0 ]; then
+            print_debug "Host repaired"
+        else
+            print_debug "Repair failed, cancelling..."
+            exit 1
+        fi
+    elif [ "$choice" = "Overwrite" ]; then
+        overwrite=true
+        print_debug "Overwriting host"
+    else
+        print_debug "Cancelled"
         exit 1
-    elif [ "$result" = 1 ]; then
-        print_debug "Repairing host..."
-        sh $(realpath "$path_to_dotfiles/system/scripts/interactive/repairHost.sh") --hostname "$cmd_hostname"
-        print_debug "Host repaired"
-        exit 0
-    elif [ "$result" = 2 ]; then
-        print_debug "Overwriting host..."
-        cmd_force="--force"
     fi
 fi
 
-
-if [ -z "$cmd_no_new_config" ]; then
-	sh "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh" "Do you want to copy your existing configuration.nix file from /etc/nixos/?" --default no --no-usage $cmd_debug
-	if [ "$?" = 0 ]; then
-		cmd_no_new_config="--no-new-config"
-	fi
+if [ -d "$path_to_dotfiles/hosts/$hostname" -a "$overwrite" = true ]; then
+    sudo rm -rf "$path_to_dotfiles/hosts/$hostname"
+    print_debug "Removed old host"
 fi
 
-
-exec_command="$(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh") $cmd_hostname $cmd_no_new_config $cmd_debug $cmd_force $cmd_no_usage"
-
-print_debug "Executing command: $exec_command"
-
-sudo sh $exec_command
-
-if ! [ -f $(realpath "$path_to_dotfiles/system/scripts/results/registerHost") -a $(cat "$path_to_dotfiles/system/scripts/results/registerHost") = "$cmd_hostname" ]; then
-    print_debug "Error: An unknown error occured"
-    exit 3
-fi
-
-if [ ! -f $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/hostSettings.nix") ]; then
-    print_debug "Generating host settings..."
-    sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
-    sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" --no-usage $cmd_debug
-    print_debug "Generated host settings"
-fi
-
-if [ -f $(realpath "$path_to_dotfiles/hosts/currentsHost.nix") ]; then
-    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to set \"$cmd_hostname\" as your current host? " --default yes
-    result="$?"
-    if [ "$result" = 0 ]; then
-        sh $(realpath "$path_to_dotfiles/system/scripts/raw/setCurrentHost") "$cmd_hostname" --force
-        print_debug "Set current host to \"$cmd_hostname\""
+if [ ! -d "$path_to_dotfiles/hosts/$hostname" ]; then
+    mkdir "$path_to_dotfiles/hosts/$hostname"
+    rsync -a --ignore-existing "$path_to_dotfiles/system/scripts/presets/hosts/hostname/" "$path_to_dotfiles/hosts/$hostname/"
+    print_debug "Copied host files"
+    mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs"
+    gum spin -- sudo nixos-generate-config --force --dir $(realpath "$path_to_dotfiles/hosts/$hostname/hostConfigs/") 2>/dev/null
+    print_debug "Generated configuration files"
+    sh "$path_to_dotfiles/system/scripts/interactive/setHostSettings.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
+    if [ "$?" -ne 0 ]; then
+        print_error "Setting of host settings has failed! Please retry"
+        exit 1
     fi
+fi
 
+if [ "$copy_config" = false ]; then
+    gum confirm "Do you want to keep your configuration from /etc/nixos?" --default="No"
+    if [ "$?" = 0 ]; then
+        copy_config=true
+    fi
+fi
+
+if [ "$copy_config" = true ]; then
+    rm -rf "$path_to_dotfiles/hosts/$hostname/hostConfigs/configuration.nix"
+    cp "/etc/nixos/configuration.nix" "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
+fi
+
+if [ -f "$path_to_dotfiles/hosts/currentHost.nix" ]; then
+    gum confirm "Do you want to set $hostname as current host?"
+    if [ "$?" = 0 ]; then
+        sh "$path_to_dotfiles/system/scripts/interactive/setCurrentHost.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
+    fi
 fi

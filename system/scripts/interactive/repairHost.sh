@@ -1,29 +1,28 @@
 #!/bin/sh
 
-
 debug=false
 no_usage=false
 path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
-full=false
-no_new_settings=false
-
-cmd_hostname=""
 cmd_debug=""
-cmd_no_new_config=""
-cmd_force=""
 cmd_no_usage=""
-cmd_full=""
+
+hostname=""
+minimal=false
+
 
 print_usage_force() {
-    echo "Usage: $0 [options]"
-    echo
+    echo "Usage:" 
+    echo "  $0 [option?]"
+    echo "Or:"
+    echo "  $0 --help, -h      Show this message and exit"
+    echo ""
     echo "Options:"
-	echo "  --hostname, -h <hostName>	Pre set host name"
-    echo "  --full, -f                  Also repair host settings"
-    echo "  --debug, -d         		Enable debug mode"
-    echo "  --no-usage, -u      		Don't show usage after an error"
-    echo "  --help, -h          		Display this help message and exit"
-    echo
+    echo "  --hostname,    -H <hostname>      Pre set hostname"
+    echo "  --minimal,     -m                 Only reset minimum of files"
+    echo ""
+    echo "  --no-usage, -u                  Don't show usage after an error"
+    echo "  --debug,    -d                  Enable debug mode"
+    echo ""
 }
 
 print_usage() {
@@ -38,10 +37,30 @@ print_debug() {
     fi
 }
 
+print_error() {
+    echo "[Error]: $1"
+}
+
+is_hostname_valid() {
+    if [ -z "$(echo "$hostname" | xargs)" -o "$hostname" = "GLOBAL" ]; then
+        return 1
+    fi
+    return 0
+}
+
 get_hostname() {
-	while [ -z "$cmd_hostname" ]; do
-		read -p "What host do you want to repair? " cmd_hostname
+    hostname=$(gum input --prompt="What is the name of the host? " --placeholder="Enter name...")
+	while ! is_hostname_valid; do
+		print_error "Hostname \"$hostname\" is invalid"
+        hostname=$(gum input --prompt="What is the name of the host? " --placeholder="Enter name...")
 	done
+    sh "$path_to_dotfiles/system/scripts/helper/isHostRegistered.sh" "$hostname" "--basic" $cmd_debug $cmd_no_usage
+    result=$?
+    if [ "$result" -ne 0 ]; then
+        print_error "Hostname \"$hostname\" is unknown"
+        get_hostname
+    fi
+
 }
 
 
@@ -57,30 +76,26 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --debug|-d)
             debug=true
-			cmd_debug="--debug"
-            ;;
-        --full|-f)
-            full=true
-            cmd_full="--no-settings"
+            cmd_debug="--debug"
             ;;
         --no-usage|-u)
             no_usage=true
-			cmd_no_usage="--no-usage"
+            cmd_no_usage="--no-usage"
             ;;
-        --no-new-settings)
-            no_new_settings=true
+        --minimal|-m)
+            minimal=true
             ;;
-		--hostname|-n)
+		--hostname|-H)
 			if [ -n "$2" ]; then
-				cmd_hostname="$2"
+				hostname="$2"
 				shift
 			else
-				echo "Error: --hostname or -n requires a name."
+				print_error "--hostname, -H requires a hostname"
 				print_usage
 			fi
 			;;
         *)
-            echo "Error: Unknown argument '$1'."
+            print_error "Unknown argument '$1'."
             print_usage
             exit 1
             ;;
@@ -94,60 +109,66 @@ if [ -z "$SUDO_USER" ]; then
 fi
 
 if ! sudo -v 2>/dev/null; then
-    echo "Error: This script needs sudo rights!"
+    print_error "This script needs sudo rights!"
     print_usage
     exit 2
 fi
 
-if [ -z "$cmd_hostname" ]; then
+if [ -z "$hostname" ]; then
 	get_hostname
-fi
-
-while [ ! -d $(realpath "$path_to_dotfiles/hosts/$cmd_hostname") ]; do
-	echo "Error: There is no host registered with the name \"$cmd_hostname\""
-	cmd_hostname=""
-	get_hostname
-done
-
-if [ -z "$cmd_full" ]; then
-    if [ -f $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/hostSettings.nix") ]; then
-        sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to reset the host settings also?" --default no
-        result="$?"
-        if [ "$result" = 0 ]; then
-            cmd_full="--no-settings"
-            full=true
-        elif [ ! "$result" = 1 ]; then
-            print_debug "Cancelled..."
-            exit 2
-        fi
-    else
-        cmd_full=""
+else
+    sh "$path_to_dotfiles/system/scripts/helper/isHostRegistered.sh" "$hostname" "--basic" $cmd_debug $cmd_no_usage
+    result=$?
+    if [ "$result" -ne 0 ]; then
+        get_hostname
     fi
 fi
 
-# create host backup
-sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/createHostBackup.sh") "$cmd_hostname" $cmd_debug --no-usage
-print_debug "Host backup generated"
+print_debug "Host selected: $hostname"
 
-# delete host completely
-sudo rm -rf $(realpath "$path_to_dotfiles/hosts/$cmd_hostname/")
-print_debug "Host \"$cmd_hostname\" deleted"
+selected_files="./hostConfigs/hardware-configuration.nix"
 
-# regenerate host
-sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/registerHost.sh") "$cmd_hostname" --force $cmd_debug --no-usage
-print_debug "Regenerated host"
-
-
-sudo sh $(realpath "$path_to_dotfiles/system/scripts/raw/loadHostBackup.sh") "$cmd_hostname" $cmd_debug --no-usage --no-configs $cmd_full
-print_debug "Restored host backup"
-
-if [ "$full" = true -a "$no_new_settings" = false ]; then
-    sh $(realpath "$path_to_dotfiles/system/scripts/helper/getConfirmation.sh") "Do you want to regenerate the host settings?" --default yes
-    if [ ! "$?" = 0 ]; then
-        exit 0
-    fi
-    sh $(realpath "$path_to_dotfiles/system/scripts/raw/createBasicHostSettings.sh") "$cmd_hostname" $cmd_debug $cmd_no_usage
-    print_debug "Generated basic host settings"
-    sh $(realpath "$path_to_dotfiles/system/scripts/raw/setHostSettings.sh") "$cmd_hostname" $cmd_debug $cmd_no_usage
-    print_debug "Host settings set for \"$cmd_hostname\""
+if [ "$minimal" = false ]; then
+    selected_files=$(find "$path_to_dotfiles/hosts/$hostname" -type f -printf "./%P\n" | gum choose --header="Choose files you want to reset:" --no-limit --selected=./hostConfigs/hardware-configuration.nix)
 fi
+
+echo "$selected_files" | xargs -I{} rm "$path_to_dotfiles/hosts/$hostname/{}"
+print_debug "Deleted files: 
+$selected_files"
+
+if [ -f "$path_to_dotfiles/hosts/$hostname/hostConfigs/hardware-configuration.nix" ]; then
+    rm -rf "$path_to_dotfiles/hosts/$hostname/hostConfigs/hardware-configuration.nix"
+    print_debug "Removed hardware-configuration.nix file"
+fi
+
+hostSettingsRemoved=$([ ! -f "$path_to_dotfiles/hosts/$hostname/hostSettings.nix" ] && echo 1 || echo 0)
+print_debug "Host settings removed: $hostSettingsRemoved"
+
+if [ ! -d "$path_to_dotfiles/hosts/$hostname/hostConfigs" ]; then
+    mkdir "$path_to_dotfiles/hosts/$hostname/hostConfigs/"
+fi
+
+if [ ! -f "$path_to_dotfiles/hosts/$hostname/hostConfigs/configuration.nix" ]; then
+    sudo nixos-generate-config --force --dir $(realpath "$path_to_dotfiles/hosts/$hostname/hostConfigs/") 2>/dev/null
+    print_debug "Generated configuration and hardware-configuration files"
+else
+    sudo nixos-generate-config --show-hardware-config > "$path_to_dotfiles/hosts/$hostname/hostConfigs/hardware-configuration.nix" 2>/dev/null
+    print_debug "Generated hardware-configuration.nix file"
+fi
+
+
+rsync -a --ignore-existing "$path_to_dotfiles/system/scripts/presets/hosts/hostname/" "$path_to_dotfiles/hosts/$hostname/"
+if [ "$?" = 0 ]; then
+    print_debug "Successfully copied files"
+else
+    print_debug "Error copying files"
+    exit 1
+fi
+
+
+if [ $hostSettingsRemoved ]; then
+    sh "$path_to_dotfiles/system/scripts/interactive/setHostSettings.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
+    print_debug "Host settings have been reset"
+fi
+
+exit 0

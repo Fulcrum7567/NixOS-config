@@ -70,6 +70,9 @@
 		
 		# Get settings of current host
 		hostSettings = ( import ./hosts/${currentHost}/hostSettings.nix );
+
+		# Get user settings
+		userSettings = ( import ./user/userSettings.nix );
 		
 		
 		# ╔═══════════════════════════════╗
@@ -215,9 +218,10 @@
 					./hosts/${currentHost}/hostConfigs/configuration.nix
 					./user/desktops/${hostSettings.desktop}/config.nix
 					./user/themes/${hostSettings.theme}/config.nix
+					./user/user.nix
 				];
 				specialArgs = {
-					inherit currentHost hostSettings sops-nix;
+					inherit currentHost hostSettings userSettings sops-nix;
 				};
 			};
 		};
@@ -236,7 +240,7 @@
 					./user/themes/${hostSettings.theme}/home.nix
 				];
 				extraSpecialArgs = {
-				inherit currentHost hostSettings sops-nix;
+				inherit currentHost hostSettings userSettings sops-nix;
 				};
 			};
 		};
