@@ -166,7 +166,7 @@ else
 fi
 
 
-if [ $hostSettingsRemoved ]; then
+if [ $hostSettingsRemoved = 1 ]; then
     sh "$path_to_dotfiles/system/scripts/interactive/setHostSettings.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
     print_debug "Host settings have been reset"
 fi

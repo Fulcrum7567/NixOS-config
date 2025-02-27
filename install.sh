@@ -97,28 +97,38 @@ if [ -z "$location" ]; then
 	location=$(gum input --prompt="Where do you want to install your dotfiles? " --placeholder="Default: ~/.dotfiles")
 fi
 
-if [ -z "$location"]; then
+if [ -z "$location" ]; then
 	location="~./dotfiles"
 fi
 
 print_debug "Location set to \"$location\""
 
-
-nix-shell -p git --command "git clone https://github.com/Fulcrum7567/NixOS-config.git $location"
+gum spin --spinner dot --title "Cloning repository" -- \
+    nix-shell -p git --run "git clone https://github.com/Fulcrum7567/NixOS-config.git $location"
 print_debug "Cloned git repo"
 
 output=""
 
+
+cd $location
 if [ "$hostname_given" = false ]; then
-	output=$(sh $(realpath "$SCRIPT_DIR/system/scripts/interactive/registerHost.sh") $cmd_debug $cmd_no_usage)
+	tmpfile=$(mktemp)
+  sh "$(realpath "$location/system/scripts/interactive/registerHost.sh")" $cmd_debug $cmd_no_usage | tee "$tmpfile"
+  output=$(awk -F'"' '{last = $(NF-1)} END {print last}' "$tmpfile")
+  rm "$tmpfile"
 else
-	output=$(sh $(realpath "$SCRIPT_DIR/system/scripts/interactive/registerHost.sh") "--hostname" "$hostname" $cmd_debug $cmd_no_usage)
+  tmpfile=$(mktemp)
+  sh "$(realpath "$location/system/scripts/interactive/registerHost.sh")" "--hostname" "$hostname" $cmd_debug $cmd_no_usage | tee "$tmpfile"
+  output=$(awk -F'"' '{last = $(NF-1)} END {print last}' "$tmpfile")
+  rm "$tmpfile"
 fi
 
 
 
-if [ "$?" = 0 ]; then
-	echo $output
+if [ -n "$output" ]; then
+	sh "$location/system/scripts/interactive/setCurrentHost.sh" "--hostname" "$output" $cmd_debug $cmd_no_usage
+else
+    print_error "Something went wrong."
 fi
 
 
@@ -133,7 +143,7 @@ fi
 
 
 
-' :
+: '
 
 
 # Clone dotfiles
@@ -166,4 +176,5 @@ fi
 sh $(realpath "$SCRIPT_DIR/system/scripts/raw/setCurrentHost.sh") "$hostname"
 sh $(realpath "$SCRIPT_DIR/system/scripts/raw/gitAddAll.sh")
 git update-index --assume-unchanged $SCRIPT_DIR/hosts/currentHost.nix
-' 
+
+'

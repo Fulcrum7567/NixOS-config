@@ -99,6 +99,12 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+hosts=$(find "$path_to_dotfiles/hosts/" -maxdepth 1 -type d ! -name "GLOBAL" ! -name ".*" -printf "%P\n")
+if [ -z "$hosts" ]; then
+    print_error "No hosts found! Please create one using registerHost.sh"
+    exit 1
+fi
+
 if [ -z "$hostname" ]; then
     select_hostname
 else
@@ -136,11 +142,11 @@ fi
 check_abortion $gpu_manufacturer
 print_debug "GPU manufacturer set to \"$gpu_manufacturer\""
 
-package_profile=$(find "$path_to_dotfiles/user/packages/profiles" -type f -printf "%P\n" | gum choose --header="What package profile do you want to use?")
+package_profile=$(find "$path_to_dotfiles/user/packages/profiles" -type f -printf "%P\n" | sed 's/\.nix$//' | gum choose --header="What package profile do you want to use?")
 check_abortion $package_profile
 print_debug "Package profile set to \"$package_profile\""
 
-desktop=$(find "$path_to_dotfiles/user/desktops/profiles" -type f -printf "%P\n" | gum choose --header="What desktop profile do you want to use?")
+desktop=$(find "$path_to_dotfiles/user/desktops/profiles" -type f -printf "%P\n" | sed 's/\.nix$//' | gum choose --header="What desktop profile do you want to use?")
 check_abortion $desktop
 print_debug "Desktop profile set to \"$desktop\""
 

@@ -143,8 +143,7 @@ result=$?
 
 if [ $result -eq 0 -a "$repair" = false -a "$overwrite" = false ]; then
     # exists and ok
-    echo "A host with the name \"$hostname\" already exists. Do you want to repair or overwrite it?"
-    choice=$(gum choose Repair Overwrite Cancel)
+    choice=$(gum choose Repair Overwrite Cancel --header="A host with the name \"$hostname\" already exists. Do you want to repair or overwrite it?")
     if [ "$choice" = "Repair" ]; then
         repair=true
         sh "$path_to_dotfiles/system/scripts/interactive/repairHost.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage

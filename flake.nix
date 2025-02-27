@@ -219,7 +219,7 @@
 					./hosts/GLOBAL/additionalConfig.nix
 					./hosts/${currentHost}/additionalConfig.nix
 					./hosts/${currentHost}/hostConfigs/configuration.nix
-					./user/desktops/${hostSettings.desktop}/config.nix
+					./user/desktops/profiles/${hostSettings.desktop}.nix
 					./user/themes/${hostSettings.theme}/config.nix
 					./user/user.nix
 				];
