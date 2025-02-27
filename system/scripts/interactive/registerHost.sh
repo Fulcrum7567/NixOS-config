@@ -200,3 +200,5 @@ if [ -f "$path_to_dotfiles/hosts/currentHost.nix" ]; then
         sh "$path_to_dotfiles/system/scripts/interactive/setCurrentHost.sh" "--hostname" "$hostname" $cmd_debug $cmd_no_usage
     fi
 fi
+
+echo "Successfully created host \"$hostname\""

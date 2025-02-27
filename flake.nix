@@ -21,6 +21,9 @@
 		nixpkgs-stable.url = "nixpkgs/nixos-24.11";
 		nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 		
+		# input hardware repo
+		hardware.url = "github:nixos/nixos-hardware";
+		
 		
 		# input home-manager
 		home-manager-stable = {
@@ -258,7 +261,7 @@
 
 			  install = pkgs.writeShellApplication {
 				name = "install";
-				runtimeInputs = with pkgs; [ git ];
+				runtimeInputs = with pkgs; [ git gum ];
 				text = ''${./install.sh} "$@"'';
 			  };
 			});
