@@ -9,13 +9,13 @@
 		# packages that use the default package state
 
 
-	] ++ with pkgs-stable; [
+	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch
 
 
-	] ++ with pkgs-unstable; [
+	]) ++ (with pkgs-unstable; [
 		# packages that always use the unstable branch
 
 
-	];
+	]);
 } 

@@ -103,11 +103,11 @@ fi
 
 print_debug "Name set to \"$name\""
 
-if [ -f "$path_to_dotfiles/user/packages/groups/$name" ]; then
+if [ -f "$path_to_dotfiles/user/packages/groups/$name.nix" ]; then
 	if [ "$overwrite" = false ]; then
 		result=$(gum choose Overwrite Edit Cancel --header="There already exists a group with the name \"$name\". Do you want to overwrite or edit it?")
 		if [ "$result" = "Edit" ]; then
-			$EDITOR "$path_to_dotfiles/user/packages/groups/$name"
+			$EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$name.nix")
 			no_edit=true
 		elif [ "$result" = "Overwrite" ]; then
 			overwrite=true
@@ -116,32 +116,37 @@ if [ -f "$path_to_dotfiles/user/packages/groups/$name" ]; then
 		fi
 	fi
 	if [ "$overwrite" = true ]; then
-		rm -rf "$path_to_dotfiles/user/packages/groups/$name"
+		rm -rf "$path_to_dotfiles/user/packages/groups/$name.nix"
 		print_debug "Removed group \"$name\""
 	fi
 fi
 
-if [ ! -f "$path_to_dotfiles/user/packages/groups/$name" ]; then
+if [ ! -f "$path_to_dotfiles/user/packages/groups/$name.nix" ]; then
 	cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/group.nix") $(realpath "$path_to_dotfiles/user/packages/groups/$name.nix")
+    print_debug "Copied file"
 fi
 
 
 if [ "$no_edit" = false ]; then
-	result=$(gum confirm "Do you want to edit the group?")
-	if [ "$result" = 0 ]; then
-		$EDITOR "$path_to_dotfiles/user/packages/groups/$name"
+    gum confirm "Do you want to edit the group?"
+    result=$?
+	if [ $result -eq 0 ]; then
+		$EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$name.nix")
+        print_debug "Edited group"
 	fi
 fi
 
 if [ "$no_git" = false ]; then
-	result=$(gum confirm "Do you want to add your edits to git?")
-	if [ "$result" = 1 ]; then
+	gum confirm "Do you want to add your edits to git?"
+    result=$?
+	if [ $result -eq 1 ]; then
 		no_git=true
 	fi
 fi
 
 if [ "$no_git" = false ]; then
-	git add "$path_to_dotfiles/user/packages/groups/$name"
+	git add "$path_to_dotfiles/user/packages/groups/$name.nix"
+    print_debug "Added to git"
 	if [ "$new" = true ]; then
 		git commit -m "[Auto generated] Added package group \"$name\""
 	else
