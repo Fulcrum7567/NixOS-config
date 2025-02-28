@@ -16,7 +16,7 @@ print_usage_force() {
     echo "  $0 --help, -h      Show this message and exit"
     echo ""
     echo "Options:"
-	echo "  --package,    -p <package name>	  Pre set package name"
+	echo "  --name,    -n <package name>	  Pre set package name"
     echo "  --group,   -g <group name>        Pre set group"            
     echo "  --no-edit,   -e 				Do not ask for group editing"            
     echo ""
