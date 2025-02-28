@@ -1,5 +1,131 @@
 #!/bin/sh
 
+debug=false
+no_usage=false
+path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
+
+cmd_debug=""
+cmd_no_usage=""
+
+
+
+print_usage_force() {
+    echo "Usage:" 
+    echo "  $0 [option?]"
+    echo "Or:"
+    echo "  $0 --help, -h      Show this message and exit"
+    echo ""
+    echo "Options:"
+	echo "  --package,    -p <package name>	  Pre set package name"
+    echo "  --group,   -g <group name>        Pre set group"            
+    echo "  --no-edit,   -e 				Do not ask for group editing"            
+    echo ""
+    echo "  --no-usage, -u                  Don't show usage after an error"
+    echo "  --debug,    -d                  Enable debug mode"
+    echo ""
+}
+
+print_usage() {
+    if [ "$no_usage" = false ]; then
+        print_usage_force
+    fi
+} 
+
+print_debug() {
+    if [ "$debug" = true ]; then
+        echo "[Debug]: $1"
+    fi
+}
+
+print_error() {
+    echo "[Error]: $1"
+}
+
+
+is_hostname_valid() {
+    if [ -z "$(echo "$hostname" | xargs)" -o "$hostname" = "GLOBAL" ]; then
+        return 1
+    fi
+    return 0
+}
+
+
+
+if [ "$1" = "--help" -o "$1" = "-h" ]; then
+    print_usage_force
+    exit 0
+fi
+
+
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --debug|-d)
+            debug=true
+            cmd_debug="--debug"
+            ;;
+        --no-usage|-u)
+            no_usage=true
+            cmd_no_usage="--no-usage"
+            ;;
+        --copy-config|-c)
+            copy_config=true
+            ;;
+        --overwrite|-o)
+            overwrite=true
+            ;;
+        --repair|-r)
+            repair=true
+            ;;
+		--hostname|-H)
+			if [ -n "$2" ]; then
+				hostname="$2"
+                hostname_given=true
+				shift
+			else
+				print_error "--hostname, -H requires a hostname"
+				print_usage
+                exit 1
+			fi
+			;;
+        *)
+            echo "Error: Unknown argument '$1'."
+            print_usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+: '
+
+#!/bin/sh
+
 # <package name> --group <group name> 
 
 path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
@@ -26,9 +152,9 @@ print_usage_force() {
     echo "Options:"
 	echo "  --group, -g <group name>		Pre set group name"
     echo "  --overwrite, -o        			Overwrite group if it already exists"
-    echo "  --no-edit, -e                   Don't ask to edit after creating new group"
+    echo "  --no-edit, -e                   Dont ask to edit after creating new group"
     echo "  --debug, -d         			Enable debug mode"
-    echo "  --no-usage, -u      			Don't show usage after an error"
+    echo "  --no-usage, -u      			Dont show usage after an error"
     echo "  --help, -h          			Display this help message and exit"
     echo
 }
@@ -273,4 +399,4 @@ fi
 
 
 
-
+'
