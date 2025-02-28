@@ -1,6 +1,6 @@
 { userSettings, ... }:
 {
-	users.users.${userSettings.userName} = {
+	users.users.${userSettings.username} = {
 	    isNormalUser = true;
 	    description = "${userSettings.displayName}";
 	    extraGroups = [ "networkmanager" "wheel" ];

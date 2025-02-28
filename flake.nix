@@ -103,17 +103,17 @@
 		};
 		
 		# patch unstable packages
-		nixpkgs-patched =
-			(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if hostSettings.gpuManufacturer == "amd" then true else false); }).applyPatches {
-			  name = "nixpkgs-patched";
-			  src = inputs.nixpkgs-unstable;
-			  patches = [ 
-						  
-						];
-			};
+		#nixpkgs-patched =
+		#	(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if #hostSettings.gpuManufacturer == "amd" then true else false); }).applyPatches {
+		#	  name = "nixpkgs-patched";
+		#	  src = inputs.nixpkgs-unstable;
+		#	  patches = [ 
+		#				  
+		#				];
+		#	};
 			
 		# define unstable packages
-		pkgs-unstable = import inputs.nixpkgs-patched {
+		pkgs-unstable = import inputs.nixpkgs-unstable {
 			system = hostSettings.system;
 			config = {
 			  allowUnfree = true;
@@ -124,6 +124,13 @@
 		  
 		# define default packages
 		pkgs = (if (hostSettings.defaultPackageState == "stable") then 
+					pkgs-stable
+				else
+					pkgs-unstable
+				);
+
+		# define system package state
+		pkgs-system = (if (hostSettings.systemState == "stable") then
 					pkgs-stable
 				else
 					pkgs-unstable
@@ -234,13 +241,14 @@
 		# ----- HOME-MANAGER CONFIGURATION ----- #
 		homeConfigurations = {
 			user = home-manager.lib.homeManagerConfiguration {
-				inherit pkgs;
+				pkgs = pkgs-system;
 				modules = [
 					./hosts/GLOBAL/additionalHome.nix
 					./hosts/${currentHost}/additionalHome.nix
 					./user/packages/profiles/${hostSettings.packageProfile}.nix
-					./user/desktops/${hostSettings.desktop}/home.nix
+					#./user/desktops/${hostSettings.desktop}/home.nix
 					./user/themes/${hostSettings.theme}/home.nix
+					./user/home.nix
 				];
 				extraSpecialArgs = {
 				inherit currentHost hostSettings userSettings sops-nix;
