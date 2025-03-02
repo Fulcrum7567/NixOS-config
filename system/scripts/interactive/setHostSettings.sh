@@ -21,10 +21,7 @@ print_usage_force() {
     echo "  $0 --help, -h      Show this message and exit"
     echo ""
     echo "Options:"
-	echo "  --hostname,    -H <hostName>	  Pre set hostname"
-    echo "  --overwrite,   -o               Overwrite host if it already exists"
-    echo "  --repair,      -r               Repair host if it already exists"
-    echo "  --copy-config, -c               Copy old config from /etc/nixos"              
+	echo "  --hostname,    -H <hostName>	  Pre set hostname"            
     echo ""
     echo "  --no-usage, -u                  Don't show usage after an error"
     echo "  --debug,    -d                  Enable debug mode"
@@ -78,7 +75,7 @@ while [ $# -gt 0 ]; do
         --no-usage|-u)
             no_usage=true
             cmd_no_usage="--no-usage"
-            ;;
+            ;; 
 		--hostname|-H)
 			if [ -n "$2" ]; then
 				hostname="$2"
