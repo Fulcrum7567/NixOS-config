@@ -4,4 +4,6 @@
 	emails = {
 		git = "dragon.fighter@outlook.de";
 	};
+	editor = "sublime";
+	terminal = "kitty";
 }
