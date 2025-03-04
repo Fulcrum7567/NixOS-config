@@ -3,7 +3,14 @@
 { userSettings, hostSettings, ... }:
 {
 	home.sessionVariables = {
-		EDITOR = userSettings.editor;
+		EDITOR = "TEST";
 		TERM = userSettings.terminal;
+		test_var = "test";
 	};
+
+	programs.bash = {
+    enable = true;
+    enableCompletion = true;
+  };
+  
 } 

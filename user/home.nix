@@ -68,7 +68,7 @@
   #  /etc/profiles/per-user/fulcrum/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "TEST";
   };
 
   # Let Home Manager install and manage itself.

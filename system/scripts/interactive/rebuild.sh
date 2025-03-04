@@ -53,9 +53,9 @@ rebuild_system() {
 
 rebuild_home() {
     if [ "$debug" = true ]; then
-        gum spin --spinner="hamburger" --title="Rebuilding system..." --show-output -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
+        gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-output -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
     else
-        gum spin --spinner="hamburger" --title="Rebuilding system..." -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
+        gum spin --spinner="hamburger" --title="Rebuilding home-manager..." -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
     fi
 }
 

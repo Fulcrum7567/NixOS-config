@@ -32,8 +32,8 @@
 		};
 		
 		home-manager-unstable = {
-			url = "github:nix-community/home-manager/master";
-			inputs.nixpkgs.follows = "nixpkgs-unstable";
+				url = "github:nix-community/home-manager/master";
+				inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 
 		# sops
@@ -102,15 +102,6 @@
 			};
 		};
 		
-		# patch unstable packages
-		#nixpkgs-patched =
-		#	(import inputs.nixpkgs-unstable { system = hostSettings.system; rocmSupport = (if #hostSettings.gpuManufacturer == "amd" then true else false); }).applyPatches {
-		#	  name = "nixpkgs-patched";
-		#	  src = inputs.nixpkgs-unstable;
-		#	  patches = [ 
-		#				  
-		#				];
-		#	};
 			
 		# define unstable packages
 		pkgs-unstable = import inputs.nixpkgs-unstable {
@@ -118,6 +109,8 @@
 			config = {
 			  allowUnfree = true;
 			  allowUnfreePredicate = (_: true);
+			  allowInsecure = true;
+			  permittedInsecurePackages = [ "openssl-1.1.1w" ];
 			};
 			overlays = [ ];
 		  };
@@ -248,11 +241,14 @@
 					./user/packages/profiles/${hostSettings.packageProfile}.nix
 					#./user/desktops/${hostSettings.desktop}/home.nix
 					./user/themes/${hostSettings.theme}/home.nix
+					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/home.nix
+					./user/var.nix
+					
 				];
-				extraSpecialArgs = {
-				inherit currentHost hostSettings userSettings sops-nix;
-				};
+					extraSpecialArgs = {
+					inherit currentHost hostSettings userSettings sops-nix pkgs-stable pkgs-unstable;
+					};
 			};
 		};
 		

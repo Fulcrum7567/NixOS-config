@@ -1,11 +1,16 @@
-{ pkgs, lib, pkgs-stable, pkgs-unstable, ... }:
+{ pkgs, lib, pkgs-stable, pkgs-unstable, userSettings, ... }:
 {
 
 	imports = [
 	];
 
 	home.packages = with pkgs; [
-        git 
+        	git
 	];
-	programs.git.enable = true;
+	programs.git = {
+		enable = true;
+		userName = userSettings.git.userName;
+		userEmail = userSettings.git.userEmail;
+	};
+	
 } 
