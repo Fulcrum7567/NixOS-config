@@ -1,15 +1,12 @@
 # Imported by home-manager
 
-{ userSettings, hostSettings, ... }:
+{ userSettings, ... }:
 {
 	home.sessionVariables = {
 		EDITOR = userSettings.editor;
 		TERM = userSettings.terminal;
 	};
 
-	programs.bash = {
-    enable = true;
-    enableCompletion = true;
-  };
+	
   
 } 
