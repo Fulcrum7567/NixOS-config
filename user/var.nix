@@ -3,9 +3,8 @@
 { userSettings, hostSettings, ... }:
 {
 	home.sessionVariables = {
-		EDITOR = "TEST";
+		EDITOR = userSettings.editor;
 		TERM = userSettings.terminal;
-		test_var = "test";
 	};
 
 	programs.bash = {

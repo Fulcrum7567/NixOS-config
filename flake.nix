@@ -244,6 +244,7 @@
 					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/home.nix
 					./user/var.nix
+					./user/packages/special/shell.nix
 					
 				];
 					extraSpecialArgs = {
