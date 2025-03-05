@@ -78,7 +78,7 @@
 	    };
 
 	    "org/gnome/desktop/wm/preferences" = {
-	    	focus-new-windows = "strict";
+	    	focus-new-windows = "smart";
 	    	button-layout = "appmenu:minimize,maximize,spacer,close";
 	    	resize-with-right-button = true;
 	    };

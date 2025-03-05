@@ -33,6 +33,8 @@
 				inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 
+		nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
 
 		# ╔════════════════════════════════╗
 		# ║                                ║
@@ -54,7 +56,7 @@
 
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, ... }:
+	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, ... }:
 	let
 
 		# ╔═══════════════════════════════════════════════════════════╗
@@ -185,7 +187,7 @@
 					./user/user.nix
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs;
 				};
 			};
 		};
