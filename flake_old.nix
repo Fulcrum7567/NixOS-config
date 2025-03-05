@@ -1,6 +1,7 @@
 {
 	description = "Flake of Fulcrum";
-
+  
+  
 	# ╔══════════════════════════════════════════════════════════════╗
 	# ║                                                              ║
 	# ║    ooOoOOo o.     O OooOOo.  O       o oOoOOoOOo .oOOOo.     ║
@@ -14,14 +15,16 @@
 	# ║                                                              ║
 	# ╚══════════════════════════════════════════════════════════════╝
 
-
 	inputs = {
-
+  
 		# input nixpkgs
 		nixpkgs-stable.url = "nixpkgs/nixos-24.11";
 		nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
-
-
+		
+		# input hardware repo
+		hardware.url = "github:nixos/nixos-hardware";
+		
+		
 		# input home-manager
 		home-manager-stable = {
 			url = "github:nix-community/home-manager/release-24.11";
@@ -34,29 +37,30 @@
 		};
 
 
-		# ╔════════════════════════════════╗
-		# ║                                ║
-		# ║                                ║
-		# ║                                ║
-		# ║    .oOoO' .oOo. .oOo. .oOo     ║
-		# ║    O   o  O   o O   o `Ooo.    ║
-		# ║    o   O  o   O o   O     O    ║
-		# ║    `OoO'o oOoO' oOoO' `OoO'    ║
-		# ║           O     O              ║
-		# ║           o'    o'             ║
-		# ║                                ║
-		# ╚════════════════════════════════╝
-
+		#
+		# APPS
 
 		zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
+		# sops
+		sops-stable = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs-stable";
+		};
+
+		sops-unstable = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs-unstable";
+		};
 
 
+
+	
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, ... }:
+	outputs = inputs@{ self, ... }:
 	let
-
+		
 		# ╔═══════════════════════════════════════════════════════════╗
 		# ║                                                           ║
 		# ║                                    o     o                ║
@@ -69,7 +73,7 @@
 		# ║     `o'   `OoO'o  o     o' `OoO'o `OoO' Oo `OoO' `OoO'    ║
 		# ║                                                           ║
 		# ╚═══════════════════════════════════════════════════════════╝
-
+		
 		# Get name of current host
 		currentHost = (import ./hosts/currentHost.nix ).currentHost;
 		
@@ -79,8 +83,7 @@
 		# Get user settings
 		userSettings = ( import ./user/userSettings.nix );
 		
-
-
+		
 		# ╔═══════════════════════════════╗
 		# ║                               ║
 		# ║          o                    ║
@@ -95,60 +98,104 @@
 		# ║    o'           OoO'          ║
 		# ║                               ║
 		# ╚═══════════════════════════════╝
-
+		
+		# define stable pkgs
 		pkgs-stable = import inputs.nixpkgs-stable {
 			system = hostSettings.system;
 			config = {
-			  	allowUnfree = true;
-			  	allowUnfreePredicate = (_: true);
-			  	allowInsecure = true;
-			  	permittedInsecurePackages = [ "openssl-1.1.1w" ];
+				allowUnfree = true;
+				allowUnfreePredicate = (_: true);
 			};
 		};
-
+		
+			
+		# define unstable packages
 		pkgs-unstable = import inputs.nixpkgs-unstable {
 			system = hostSettings.system;
 			config = {
-			  	allowUnfree = true;
-			  	allowUnfreePredicate = (_: true);
-			  	allowInsecure = true;
-			  	permittedInsecurePackages = [ "openssl-1.1.1w" ];
+			  allowUnfree = true;
+			  allowUnfreePredicate = (_: true);
+			  allowInsecure = true;
+			  permittedInsecurePackages = [ "openssl-1.1.1w" ];
 			};
-		};
-
-		pkgs-default = (if (hostSettings.defaultPackageState == "stable")
-						then
-							pkgs-stable
-						else
-							pkgs-unstable
-						);
-
-		pkgs-system = (if (hostSettings.systemState == "stable")
-						then
-							pkgs-stable
-						else
-							pkgs-unstable
-						);
-
-
-
-		lib = (if (hostSettings.systemState == "stable")
-				then
-					nixpkgs-stable.lib
+			overlays = [ ];
+		  };
+		  
+		# define default packages
+		pkgs = (if (hostSettings.defaultPackageState == "stable") then 
+					pkgs-stable
 				else
-					nixpkgs-unstable.lib
+					pkgs-unstable
 				);
 
-		home-manager = (if (hostSettings.systemState == "stable")
-						then
-							home-manager-stable
+		# define system package state
+		pkgs-system = (if (hostSettings.systemState == "stable") then
+					pkgs-stable
+				else
+					pkgs-unstable
+				);
+				
+				
+					
+		# define lib
+		lib = (if (hostSettings.systemState == "stable") then 
+					inputs.nixpkgs-stable.lib
+				else
+					inputs.nixpkgs-unstable.lib
+				);
+				
+				
+
+		# define home-manager
+		home-manager = (if (hostSettings.systemState == "stable") then
+							inputs.home-manager-stable
 						else
-							home-manager-unstable
+							inputs.home-manager-unstable
 						);
 
-	in 
-	{
 
+		# define sops
+		sops-nix = (if (hostSettings.systemState == "stable") then
+						inputs.sops-stable
+						else
+							inputs.sops-unstable
+						);
+						
+		
+		# ╔═════════════════════════════════════════════╗
+		# ║                                             ║
+		# ║                       O                     ║
+		# ║                      oOo                    ║
+		# ║    .oOo  O   o .oOo   o   .oOo. `oOOoOO.    ║
+		# ║    `Ooo. o   O `Ooo.  O   OooO'  O  o  o    ║
+		# ║        O O   o     O  o   O      o  O  O    ║
+		# ║    `OoO' `OoOO `OoO'  `oO `OoO'  O  o  o    ║
+		# ║              o                              ║
+		# ║           OoO'                              ║
+		# ║                                             ║
+		# ╚═════════════════════════════════════════════╝
+		
+		# supported systems
+		supportedSystems = [ "aarch64-linux" "i686-linux" "x86_64-linux" ];
+
+		# Function to generate a set based on supported systems:
+		forAllSystems = (if (hostSettings.systemState == "stable") then
+							inputs.nixpkgs-stable.lib.genAttrs supportedSystems
+						else
+							inputs.nixpkgs-unstable.lib.genAttrs supportedSystems
+						);
+
+		# Attribute set of nixpkgs for each system:
+		nixpkgsFor = (if (hostSettings.systemState == "stable") then
+						forAllSystems (system: import inputs.nixpkgs-stable { inherit system; })
+					else
+						forAllSystems (system: import inputs.nixpkgs-unstable { inherit system; })
+					);
+    
+
+	in
+	{
+		
 		# ╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 		# ║                                                                                                                                ║
 		# ║    .oOOOo.  o       O .oOOOo.  oOoOOoOOo o.OOoOoo Oo      oO                                                                   ║
@@ -170,7 +217,7 @@
 		# ║                                                                                                                                ║
 		# ╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 		
-
+		# ----- SYSTEM CONFIGURATION ----- #
 		nixosConfigurations = {
 			system = lib.nixosSystem {
 				system = hostSettings.system;
@@ -178,42 +225,67 @@
 					./hosts/GLOBAL/additionalConfig.nix
 					./hosts/${currentHost}/additionalConfig.nix
 					./hosts/${currentHost}/hostConfigs/configuration.nix
-
 					./user/desktops/profiles/${hostSettings.desktop}/config.nix
 					./user/themes/${hostSettings.theme}/config.nix
-
 					./user/user.nix
 				];
+				specialArgs = {
+					inherit currentHost hostSettings userSettings sops-nix inputs;
+				};
 			};
 		};
+		
+		
 
+		# ----- HOME-MANAGER CONFIGURATION ----- #
 		homeConfigurations = {
 			user = home-manager.lib.homeManagerConfiguration {
 				pkgs = pkgs-system;
 				modules = [
 					./hosts/GLOBAL/additionalHome.nix
 					./hosts/${currentHost}/additionalHome.nix
-
+					./user/packages/profiles/${hostSettings.packageProfile}.nix
 					./user/desktops/profiles/${hostSettings.desktop}/home.nix
 					./user/themes/${hostSettings.theme}/home.nix
-
 					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/packages/special/terminals/${userSettings.terminal}/app.nix
 					./user/packages/special/browsers/${userSettings.browser}/app.nix
-					./user/packages/special/shell.nix
-
-					./user/packages/profiles/${hostSettings.packageProfile}.nix
-
 					./user/home.nix
 					./user/var.nix
+					./user/packages/special/shell.nix
+					
 				];
-
-				extraSpecialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings;
-				};
+					extraSpecialArgs = {
+					inherit currentHost hostSettings userSettings pkgs-stable pkgs-unstable inputs;
+					};
 			};
 		};
+		
 
-	};
 
+
+
+
+		# define packages for installation
+		packages = forAllSystems (system:
+			let pkgs = nixpkgsFor.${system};
+			in {
+			  default = self.packages.${system}.install;
+
+			  install = pkgs.writeShellApplication {
+				name = "install";
+				runtimeInputs = with pkgs; [ git gum ];
+				text = ''${./install.sh} "$@"'';
+			  };
+			});
+		
+		# define apps for installation
+		apps = forAllSystems (system: {
+			default = self.apps.${system}.install;
+			install = {
+				type = "app";
+				program = "${self.packages.${system}.install}/bin/install";
+			};
+		});
+    };
 }

@@ -5,7 +5,7 @@
 	home.sessionVariables = {
 		EDITOR = userSettings.editor;
 		TERM = userSettings.terminal;
+		test = "test15";
 	};
-
   
 } 
