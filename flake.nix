@@ -184,6 +184,9 @@
 
 					./user/user.nix
 				];
+				specialArgs = {
+					inherit pkgs-default pkgs-stable pkgs-unstable;
+				};
 			};
 		};
 

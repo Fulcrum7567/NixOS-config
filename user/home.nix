@@ -1,10 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, userSettings, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "fulcrum";
-  home.homeDirectory = "/home/fulcrum";
+  home.username = userSettings.username;
+  home.homeDirectory = "/home/"+userSettings.userName;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
