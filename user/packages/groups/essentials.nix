@@ -1,22 +1,22 @@
-{ pkgs, lib, pkgs-stable, pkgs-unstable, ... }:
+{ pkgs-default, lib, pkgs-stable, pkgs-unstable, ... }:
 {
 
 	imports = [
 		# define on what group this group is based on
 	];
 
-	home.packages = with pkgs; [
+	home.packages = (with pkgs-default; [
 		# packages that use the default package state
-		neovim
+		gum
 
 
-	] ++ with pkgs-stable; [
+	]) ++ (with pkgs-stable; [
 		# packages that always use the stable branch
 
 
-	] ++ with pkgs-unstable; [
+	]) ++ (with pkgs-unstable; [
 		# packages that always use the unstable branch
 
 
-	];
+	]);
 } 
