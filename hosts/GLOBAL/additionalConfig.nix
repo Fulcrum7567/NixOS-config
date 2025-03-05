@@ -24,7 +24,8 @@ in
 	};
 
 	services.xserver = {
-  	layout = "de";
+		enable = true;
+  	xkb.layout = "de";
     xkbVariant = "";
   };
 	console.keyMap = "de";
