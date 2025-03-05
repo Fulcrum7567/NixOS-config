@@ -63,6 +63,7 @@
 	    "org/gnome/shell" = {
 			favorite-apps = [ "zen.desktop" "org.gnome.Console.desktop" "org.gnome.Nautilus.desktop" ];
 			welcome-dialog-last-shown-version = "99.2";
+			remember-mount-password = true;
 	    };
 
 	    "org/gnome/shell/extensions/alphabetical-app-grid" = {
@@ -74,6 +75,20 @@
 			font-scale = 1.4000000000000004;
 			last-window-maximised = true;
 			last-window-size = mkTuple [ 652 480 ];
+	    };
+
+	    "org/gnome/desktop/wm/preferences" = {
+	    	focus-new-windows = "strict";
+	    	button-layout = "appmenu:minimize,maximize,spacer,close";
+	    	resize-with-right-button = true;
+	    };
+
+	    "org/gnome/desktop/wm/keybindings" = {
+	    	always-on-top = [ "<Control><Super>t" ];
+	    };
+
+	    "org/gnome/Console" = {
+	    	transparency = true;
 	    };
 	};
 } 

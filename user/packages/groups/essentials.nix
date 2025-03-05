@@ -8,6 +8,7 @@
 	home.packages = (with pkgs-default; [
 		# packages that use the default package state
 		gum
+		dconf-editor
 
 
 	]) ++ (with pkgs-stable; [

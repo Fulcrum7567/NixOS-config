@@ -25,9 +25,9 @@ in
 
 	services.xserver = {
 		enable = true;
-  	xkb.layout = "de";
-    xkbVariant = "";
-  };
+  		xkb.layout = "de";
+    	xkb.variant = "";
+  	};
 	console.keyMap = "de";
   
 }
