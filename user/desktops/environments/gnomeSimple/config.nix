@@ -1,0 +1,6 @@
+{ ... }:
+{
+	imports = [
+		../gnomeBase/config.nix
+	];
+} 

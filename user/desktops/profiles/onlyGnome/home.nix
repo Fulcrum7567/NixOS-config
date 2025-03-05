@@ -1,6 +1,6 @@
 { ... }:
 {
 	imports = [
-		../../environments/basicGnome/home.nix
+		../../environments/gnomeSimple/home.nix
 	];
 } 

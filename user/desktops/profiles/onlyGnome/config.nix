@@ -1,7 +1,7 @@
 { lib, ... }:
 {
 	imports = [
-		../../environments/basicGnome/config.nix
+		../../environments/gnomeSimple/config.nix
 	];
 
 
