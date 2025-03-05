@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-	inputs = [
+	imports = [
 		../../environments/basicGnome/config.nix
 	];
 

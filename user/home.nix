@@ -68,7 +68,8 @@
   #  /etc/profiles/per-user/fulcrum/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-  #  EDITOR = "TEST";
+    EDITOR = "sublime";
+    TERM = "kitty";
   };
 
   # Let Home Manager install and manage itself.

@@ -36,6 +36,12 @@
 				inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 
+
+		#
+		# APPS
+
+		zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
 		# sops
 		sops-stable = {
 			url = "github:Mic92/sops-nix";
@@ -224,7 +230,7 @@
 					./user/user.nix
 				];
 				specialArgs = {
-					inherit currentHost hostSettings userSettings sops-nix;
+					inherit currentHost hostSettings userSettings sops-nix inputs;
 				};
 			};
 		};
@@ -242,13 +248,15 @@
 					./user/desktops/profiles/${hostSettings.desktop}/home.nix
 					./user/themes/${hostSettings.theme}/home.nix
 					./user/packages/special/editors/${userSettings.editor}/app.nix
+					./user/packages/special/terminals/${userSettings.terminal}/app.nix
+					./user/packages/special/browsers/${userSettings.browser}/app.nix
 					./user/home.nix
 					./user/var.nix
 					./user/packages/special/shell.nix
 					
 				];
 					extraSpecialArgs = {
-					inherit currentHost hostSettings userSettings sops-nix pkgs-stable pkgs-unstable;
+					inherit currentHost hostSettings userSettings pkgs-stable pkgs-unstable inputs;
 					};
 			};
 		};

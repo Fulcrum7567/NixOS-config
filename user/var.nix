@@ -7,6 +7,5 @@
 		TERM = userSettings.terminal;
 	};
 
-	
   
 } 

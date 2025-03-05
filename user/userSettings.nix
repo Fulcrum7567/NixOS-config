@@ -10,4 +10,5 @@ rec {
 	};
 	editor = "sublime";
 	terminal = "kitty";
+	browser = "zen";
 }
