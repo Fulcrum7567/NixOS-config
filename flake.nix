@@ -33,6 +33,19 @@
 				inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 
+		stylix-stable = {
+			url = "github:danth/stylix/release-24.11";
+			inputs.nixpkgs.follows = "nixpkgs-stable";
+		};
+
+		stylix-unstable = {
+			url = "github:danth/stylix";
+			inputs.nixpkgs.follows = "nixpkgs-unstable";
+		};
+
+
+
+
 		nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
 
@@ -54,9 +67,10 @@
 
 
 
+
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, ... }:
+	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, ... }:
 	let
 
 		# ╔═══════════════════════════════════════════════════════════╗
@@ -80,6 +94,10 @@
 
 		# Get user settings
 		userSettings = ( import ./user/userSettings.nix );
+
+		browserSettings = ( import ./user/packages/special/browsers/${userSettings.browser}/settings.nix);
+
+		terminalSettings = (import ./user/packages/special/terminals/${userSettings.terminal}/settings.nix);
 		
 
 
@@ -148,6 +166,13 @@
 							home-manager-unstable
 						);
 
+		stylix-module = (if (hostSettings.systemState == "stable")
+					then
+						stylix-stable
+					else
+						stylix-unstable
+				);
+
 	in 
 	{
 
@@ -182,12 +207,13 @@
 					./hosts/${currentHost}/hostConfigs/configuration.nix
 
 					./user/desktops/profiles/${hostSettings.desktop}/config.nix
-					./user/themes/${hostSettings.theme}/config.nix
+					./user/themes/profiles/${hostSettings.theme}/config.nix
 
 					./user/user.nix
+
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module;
 				};
 			};
 		};
@@ -200,7 +226,7 @@
 					./hosts/${currentHost}/additionalHome.nix
 
 					./user/desktops/profiles/${hostSettings.desktop}/home.nix
-					./user/themes/${hostSettings.theme}/home.nix
+					./user/themes/profiles/${hostSettings.theme}/home.nix
 
 					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/packages/special/terminals/${userSettings.terminal}/app.nix
@@ -214,7 +240,7 @@
 				];
 
 				extraSpecialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings terminalSettings;
 				};
 			};
 		};

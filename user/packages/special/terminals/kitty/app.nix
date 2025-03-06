@@ -1,6 +1,9 @@
-{ pkgs, ... }:
+{ pkgs-default, ... }:
 {
-	home.packages = with pkgs; [
+	home.packages = with pkgs-default; [
 		kitty
 	];
+
+	programs.kitty.enable = true;
+	
 } 

@@ -1,0 +1,3 @@
+{
+	gnomeAppName = "zen.desktop";
+} 

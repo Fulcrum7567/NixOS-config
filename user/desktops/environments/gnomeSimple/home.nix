@@ -1,10 +1,12 @@
-{ lib, ... }:
+{ lib, browserSettings, terminalSettings, ... }:
 
 	with lib.hm.gvariant;
 {
 	imports = [
 		../gnomeBase/home.nix
 	];
+
+	
 
 	dconf.settings = {
 
@@ -61,7 +63,7 @@
 	    };
 
 	    "org/gnome/shell" = {
-			favorite-apps = [ "zen.desktop" "org.gnome.Console.desktop" "org.gnome.Nautilus.desktop" ];
+			favorite-apps = [ browserSettings.gnomeAppName terminalSettings.gnomeAppName "org.gnome.Nautilus.desktop" ];
 			welcome-dialog-last-shown-version = "99.2";
 			remember-mount-password = true;
 	    };

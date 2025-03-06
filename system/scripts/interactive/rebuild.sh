@@ -43,21 +43,6 @@ print_error() {
 }
 
 
-rebuild_system() {
-    if [ "$debug" = true ]; then
-        gum spin --spinner="hamburger" --title="Rebuilding system..." --show-output -- sudo nixos-rebuild switch --flake "$path_to_dotfiles#system"
-    else
-        gum spin --spinner="hamburger" --title="Rebuilding system..." -- sudo nixos-rebuild switch --flake "$path_to_dotfiles#system"
-    fi
-}
-
-rebuild_home() {
-    if [ "$debug" = true ]; then
-        gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-output -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
-    else
-        gum spin --spinner="hamburger" --title="Rebuilding home-manager..." -- sudo -u "$SUDO_USER" home-manager switch --flake "$path_to_dotfiles#user"
-    fi
-}
 
 if [ "$1" = "--help" -o "$1" = "-h" ]; then
     print_usage_force
@@ -132,14 +117,14 @@ fi
 
 case "$rebuild" in
     Full)
-        rebuild_system
-        rebuild_home
+        sh "$path_to_dotfiles/system/scripts/interactive/rebuildSystem.sh" $cmd_debug $cmd_no_usage
+        sh "$path_to_dotfiles/system/scripts/interactive/rebuildHome.sh" $cmd_debug $cmd_no_usage
         ;;
     System)
-        rebuild_system
+        sh "$path_to_dotfiles/system/scripts/interactive/rebuildSystem.sh" $cmd_debug $cmd_no_usage    
         ;;
     Home-manager)
-        rebuild_home
+        sh "$path_to_dotfiles/system/scripts/interactive/rebuildHome.sh" $cmd_debug $cmd_no_usage
         ;;
     *)
         print_error "Something went wrong, invalid state!"

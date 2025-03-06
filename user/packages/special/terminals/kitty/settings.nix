@@ -1,0 +1,3 @@
+{
+	gnomeAppName = "kitty.desktop";
+} 
