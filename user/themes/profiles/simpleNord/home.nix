@@ -6,7 +6,7 @@
 
 	stylix = {
 		enable = true;
-		image = ./../../bin/wallpapers/nixos.png;
+		image = ./../../bin/wallpapers/cpu_city.png;
 		polarity = "dark";
 
 		targets = {
@@ -19,7 +19,7 @@
 	};
 
 	programs.kitty.settings = {
-		background_opacity = lib.mkForce "0.75";
+		background_opacity = lib.mkForce "0.60";
 		modify_font = "cell_width 90%";
 	};
 } 

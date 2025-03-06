@@ -5,5 +5,5 @@
     gpuManufacturer = "nvidia";
     packageProfile = "Profile1";
     desktop = "onlyGnome";
-    theme = "none";
+    theme = "simpleNord";
 }
