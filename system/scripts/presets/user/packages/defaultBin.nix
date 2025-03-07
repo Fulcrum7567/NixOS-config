@@ -1,10 +1,10 @@
-{ pkgs, lib, pkgs-stable, pkgs-unstable, ... }:
+{ pkgs-default, lib, pkgs-stable, pkgs-unstable, ... }:
 {
 
 	imports = [
 	];
 
-	home.packages = with pkgs; [
+	home.packages = with pkgs-default; [
 		
 	];
 } 

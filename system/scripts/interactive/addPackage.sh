@@ -215,7 +215,7 @@ if [ "$binary" = true ]; then
             ;;
         Default)
             cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/defaultBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$binary_name.nix")
-            pattern=".*home.packages = with pkgs; \[.*"
+            pattern=".*home.packages = with pkgs-default; \[.*"
             ;;
         *)
             print_error "That should not have happened. Invalid state!"
@@ -244,7 +244,7 @@ if [ -n "$group" ]; then
             pattern="with pkgs-unstable; \["
             ;;
         Default)
-            pattern="home.packages = with pkgs; \["
+            pattern="home.packages = with pkgs-default; \["
             ;;
         *)
             print_error "That should not have happened. Invalid state!"
@@ -355,7 +355,7 @@ get_group() {
 get_pattern() {
     case "$cmd_state" in
         default)
-            pattern=".*home.packages = with pkgs; \[.*"
+            pattern=".*home.packages = with pkgs-default; \[.*"
             ;;
         stable)
             pattern=".*\] \+\+ with pkgs-stable; \[.*"
@@ -509,7 +509,7 @@ if [ -z "$pattern" ]; then
     sh $(realpath "$path_to_dotfiles/system/scripts/helper/getOption.sh") "What state should the package be?" default/d stable/s unstable/u --default default
     result="$?"
     if [ "$result" = 1 ]; then
-        pattern=".*home.packages = with pkgs; \[.*"
+        pattern=".*home.packages = with pkgs-default; \[.*"
         cmd_state="default"
     elif [ "$result" = 2 ]; then
         pattern=".*\] \+\+ with pkgs-stable; \[.*"
@@ -539,7 +539,7 @@ fi
 if [ "$binary" = true ]; then
     if [ "$cmd_state" = "default" ]; then
         cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/defaultBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$cmd_name.nix")
-        pattern=".*home.packages = with pkgs; \[.*"
+        pattern=".*home.packages = with pkgs-default; \[.*"
         sed -i "/$pattern/a $insertion" $(realpath "$path_to_dotfiles/user/packages/binaries/$cmd_name.nix")
     elif [ "$cmd_state" = "stable" ]; then
         cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/stableBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$cmd_name.nix")

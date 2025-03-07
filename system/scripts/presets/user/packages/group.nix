@@ -1,11 +1,11 @@
-{ pkgs, lib, pkgs-stable, pkgs-unstable, ... }:
+{ pkgs-default, lib, pkgs-stable, pkgs-unstable, ... }:
 {
 
 	imports = [
 		# define on what group this group is based on
 	];
 
-	home.packages = with pkgs; [
+	home.packages = with pkgs-default; [
 		# packages that use the default package state
 
 

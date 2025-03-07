@@ -5,13 +5,13 @@
 		# define on what group this group is based on
 	];
 
-	home.packages = (with pkgs-default; [
+	home.packages = with pkgs-default; [
 		# packages that use the default package state
 		gum
 		dconf-editor
 
 
-	]) ++ (with pkgs-stable; [
+	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch
 
 

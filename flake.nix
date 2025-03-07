@@ -211,6 +211,8 @@
 
 					./user/user.nix
 
+					./system/scripts/wrapper/hive.nix
+
 				];
 				specialArgs = {
 					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module;
