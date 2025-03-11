@@ -4,10 +4,7 @@ debug=false
 no_usage=false
 path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../")
 
-full=false
-home_manager=false
-system=false
-rebuild=""
+no_rebuild=false
 
 
 print_usage_force() {
@@ -17,6 +14,8 @@ print_usage_force() {
     echo "  $0 --help, -h      Show this message and exit"
     echo ""
     echo "Options:"
+    echo "  --no-rebuild, -r                Don't rebuild after updating"
+    echo ""
     echo "  --no-usage, -u                  Don't show usage after an error"
     echo "  --debug,    -d                  Enable debug mode"
     echo ""
@@ -57,6 +56,9 @@ while [ $# -gt 0 ]; do
             no_usage=true
             cmd_no_usage="--no-usage"
             ;;
+        --no-rebuild|-r)
+            no_rebuild=true
+            ;;
         *)
             echo "Error: Unknown argument '$1'."
             print_usage
@@ -76,8 +78,15 @@ if ! sudo -v 2>/dev/null; then
     exit 2
 fi
 
-if [ "$debug" = true ]; then
-    gum spin --spinner="hamburger" --title="Rebuilding system..." --show-output -- sudo nixos-rebuild switch --flake "$path_to_dotfiles#system"
-else
-    gum spin --spinner="hamburger" --title="Rebuilding system..." --show-error -- sudo nixos-rebuild switch --flake "$path_to_dotfiles#system"
+pushd $path_to_dotfiles &> /dev/null
+sudo nix flake update;
+sudo nix-channel --update;
+nix-channel --update;
+popd $path_to_dotfiles &> /dev/null
+
+if [ "$no_rebuild" = false ]; then
+    gum confirm "Do you want to rebuild after the update?"
+    if [ "$?" = 0 ]; then
+        sh "$path_to_dotfiles/system/scripts/interactive/rebuild.sh" "--full" $cmd_debug $cmd_no_usage
+    fi
 fi

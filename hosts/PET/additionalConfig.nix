@@ -1,24 +1,76 @@
-{ inputs, ... }:
+{ inputs, config, pkgs-default, pkgs, ... }:
 {
 	imports = [
-		"${inputs.nixos-hardware}/common/gpu/nvidia/prime.nix"
-		"${inputs.nixos-hardware}/common/gpu/nvidia/ampere/default.nix"
-		"${inputs.nixos-hardware}/common/gpu/nvidia/default.nix"
-
-		"${inputs.nixos-hardware}/common/cpu/intel/default.nix"
-		"${inputs.nixos-hardware}/common/cpu/intel/alder-lake/default.nix"
-
-		"${inputs.nixos-hardware}/common/pc/default.nix"
-		"${inputs.nixos-hardware}/common/pc/laptop/default.nix"
-		"${inputs.nixos-hardware}/common/pc/ssd/default.nix/"
-
-
-
-		"${inputs.nixos-hardware}/asus/battery.nix"
+		../GLOBAL/hardware/system/bluetooth.nix
 	];
 
-	#hardware.nvidia.open = true;
-	hardware.nvidia.prime.nvidiaBusId = "PCI:1:0:0";
-	hardware.nvidia.prime.intelBusId = "PCI:0:1:0";
-	#hardware.nvidia.modesetting.enable = true;
+	# From https://asus-linux.org/guides/nixos/
+	services.supergfxd.enable = true;
+	services = {
+	    asusd = {
+	      enable = true;
+	     	enableUserService = true;
+	    };
+	};
+
+		
+	# Enable OpenGL
+	hardware.graphics = {
+		enable = true;
+	};
+
+	# Load nvidia driver for Xorg and Wayland
+	services.xserver.videoDrivers = [ "nvidia" ];
+
+	hardware.nvidia = {
+
+		# Modesetting is required.
+		modesetting.enable = true;
+
+		# Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+		# Enable this if you have graphical corruption issues or application crashes after waking
+		# up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead 
+		# of just the bare essentials.
+		powerManagement.enable = false;
+
+		# Fine-grained power management. Turns off GPU when not in use.
+		# Experimental and only works on modern Nvidia GPUs (Turing or newer).
+		powerManagement.finegrained = false;
+
+		# Use the NVidia open source kernel module (not to be confused with the
+		# independent third-party "nouveau" open source driver).
+		# Support is limited to the Turing and later architectures. Full list of 
+		# supported GPUs is at: 
+		# https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+		# Only available from driver 515.43.04+
+		open = true;
+
+		# Enable the Nvidia settings menu,
+		# accessible via `nvidia-settings`.
+		nvidiaSettings = true;
+
+		# Optionally, you may need to select the appropriate driver version for your specific GPU.
+		package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+		prime = {
+			offload = {
+				enable = true;
+				enableOffloadCmd = true;
+			};
+			intelBusId = "PCI:0:2:0";
+			nvidiaBusId = "PCI:1:0:0";
+		};
+
+		dynamicBoost.enable = false;
+	};
+
+
+	# TODO
+	
+
+	services.udev.packages = with pkgs; [ libinput ];
+
+	#boot.kernelParams = [ "i8042.nopnp=1" "pci=nocrs" "module_blacklist=i915" ];
+
+
 }

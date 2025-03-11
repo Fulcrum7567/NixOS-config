@@ -1,6 +1,6 @@
 {
     system = "x86_64-linux";
-    systemState = "stable";
+    systemState = "unstable";
     defaultPackageState = "stable";
     gpuManufacturer = "nvidia";
     packageProfile = "Profile1";

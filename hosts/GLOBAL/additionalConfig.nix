@@ -1,4 +1,4 @@
-{ ... }:
+{ currentHost, ... }:
 let
 	english = "en_GB.UTF-8";
 	german = "de_DE.UTF-8";
@@ -7,6 +7,8 @@ in
 	nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 	nixpkgs.config.allowUnfree = true;
+
+	networking.hostName = currentHost;
 
 	time.timeZone = "Europe/Berlin";
 	i18n.defaultLocale = english;

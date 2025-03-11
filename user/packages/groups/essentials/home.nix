@@ -2,6 +2,7 @@
 {
 
 	imports = [
+		../../binaries/home/git.nix
 		# define on what group this group is based on
 	];
 
@@ -9,6 +10,7 @@
 		# packages that use the default package state
 		gum
 		dconf-editor
+		discord
 
 
 	] ++ (with pkgs-stable; [

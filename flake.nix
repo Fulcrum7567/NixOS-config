@@ -208,6 +208,7 @@
 
 					./user/desktops/profiles/${hostSettings.desktop}/config.nix
 					./user/themes/profiles/${hostSettings.theme}/config.nix
+					./user/packages/profiles/${hostSettings.packageProfile}/system.nix
 
 					./user/user.nix
 
@@ -215,7 +216,7 @@
 
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost;
 				};
 			};
 		};
@@ -235,7 +236,7 @@
 					./user/packages/special/browsers/${userSettings.browser}/app.nix
 					./user/packages/special/shell.nix
 
-					./user/packages/profiles/${hostSettings.packageProfile}.nix
+					./user/packages/profiles/${hostSettings.packageProfile}/home.nix
 
 					./user/home.nix
 					./user/var.nix

@@ -22,4 +22,5 @@
 		background_opacity = lib.mkForce "0.60";
 		modify_font = "cell_width 90%";
 	};
+
 } 

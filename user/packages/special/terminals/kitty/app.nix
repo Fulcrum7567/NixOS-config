@@ -1,6 +1,6 @@
-{ pkgs-default, ... }:
+{ pkgs, ... }:
 {
-	home.packages = with pkgs-default; [
+	home.packages = with pkgs; [
 		kitty
 	];
 

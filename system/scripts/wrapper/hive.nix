@@ -1,5 +1,6 @@
 { pkgs-default, ... }:
 	let
+		scriptDir = "/home/fulcrum/testConfig/system/scripts";
 		script = ''
 			#!/bin/sh
 
@@ -20,7 +21,7 @@ print_usage_force() {
 	echo "                  packages <stable | unstable?>  Select new default package state"
 	echo ""
 	echo "     package"
-	echo "         	   add <package name?>                 Install new package"
+	echo "             add <package name?>                 Install new package"
 	echo "             edit <binary name?>                 Edit existing binary package"
 	echo "             group"
 	echo "                   add <group name?>             Create new package group"
@@ -57,7 +58,7 @@ fi
 
 case "$1" in
 	rebuild)
-		if [ "$#" -eq 2 ]; then
+		if [ "$#" -eq 1 ]; then
 			sh "${scriptDir}/interactive/rebuild.sh"
 		else
 			arg=""
@@ -70,8 +71,12 @@ case "$1" in
 					;;
 				full)
 					arg="--full"
+					;;
+				*)
+					print_error "Unknown argument \"$2\""
+					exit 1
 			esac
-			if [ "$#" -gt 2 ];
+			if [ "$#" -gt 2 ]; then
 				shift 2
 				sh "${scriptDir}/interactive/rebuild.sh" "$arg" "$@"
 			else
@@ -81,7 +86,7 @@ case "$1" in
 		;;
 esac
 
-		''
+		'';
 	in
 {
 	environment.systemPackages = [
