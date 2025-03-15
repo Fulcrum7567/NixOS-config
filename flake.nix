@@ -44,8 +44,6 @@
 		};
 
 
-
-
 		nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
 
@@ -209,10 +207,12 @@
 					./user/desktops/profiles/${hostSettings.desktop}/config.nix
 					./user/themes/profiles/${hostSettings.theme}/config.nix
 					./user/packages/profiles/${hostSettings.packageProfile}/system.nix
+					./user/packages/special/shell/system.nix
 
 					./user/user.nix
 
 					./system/scripts/wrapper/hive.nix
+
 
 				];
 				specialArgs = {
@@ -234,7 +234,7 @@
 					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/packages/special/terminals/${userSettings.terminal}/app.nix
 					./user/packages/special/browsers/${userSettings.browser}/app.nix
-					./user/packages/special/shell.nix
+					./user/packages/special/shell/home.nix
 
 					./user/packages/profiles/${hostSettings.packageProfile}/home.nix
 

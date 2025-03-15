@@ -118,7 +118,12 @@ fi
 case "$rebuild" in
     Full)
         sh "$path_to_dotfiles/system/scripts/interactive/rebuildSystem.sh" $cmd_debug $cmd_no_usage
-        sh "$path_to_dotfiles/system/scripts/interactive/rebuildHome.sh" $cmd_debug $cmd_no_usage
+        if [ "$?" -eq 0 ]; then
+            sh "$path_to_dotfiles/system/scripts/interactive/rebuildHome.sh" $cmd_debug $cmd_no_usage
+        else
+            print_error "Rebuilding system failed. Cancelling..."
+            exit 2
+        fi
         ;;
     System)
         sh "$path_to_dotfiles/system/scripts/interactive/rebuildSystem.sh" $cmd_debug $cmd_no_usage    

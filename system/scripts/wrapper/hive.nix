@@ -1,4 +1,4 @@
-{ pkgs-default, ... }:
+{ pkgs-default, currentHost, ... }:
 	let
 		scriptDir = "/home/fulcrum/testConfig/system/scripts";
 		script = ''
@@ -13,8 +13,8 @@ print_usage_force() {
 	echo "     rebuild <system | home | full?>             Rebuild the configuration"
 	echo "     update                                      Update the configuration"
 	echo "     switch"
-	echo "            desktop <new profile name?>          Select new desktop profile"
-	echo "            theme <new profile name?>            Select new theme profile"
+	echo "            desktop  <new profile name?>         Select new desktop profile"
+	echo "            theme    <new profile name?>         Select new theme profile"
 	echo "            packages <new profile name?>         Select new package profile"
 	echo "            state"
 	echo "                  system <stable | unstable?>    Select new system state"
@@ -84,6 +84,60 @@ case "$1" in
 			fi
 		fi
 		;;
+	update)
+		if [ "$?" -eq 1 ]; then
+			sh "${scriptDir}/interactive/update.sh"
+		else
+			shift 1
+			sh "${scriptDir}/interactive/update.sh" "$@"
+		fi
+		;;
+	switch)
+		if [ "$#" -eq 1 ]; then
+			result=$(gum choose Desktop Theme Packages State --header="What would you like to switch?")
+			switcher=$(echo "$result" | tr '[:upper:]' '[:lower:]')
+		else
+			switcher="$2"
+		fi
+
+		case "$switcher" in
+			desktop)
+				sh "${scriptDir}/interactive/switchDesktop.sh" "--host" "${currentHost}"
+			;;
+			theme)
+				sh "${scriptDir}/interactive/switchTheme.sh" "--host" "${currentHost}"
+			;;
+			packages)
+				sh "${scriptDir}/interactive/switchPackages.sh" "--host" "${currentHost}"
+			;;
+			state)
+				if [ "$#" -lt 2 ]; then
+					result=$(gum choose System Packages --header="Of what woud you like to switch the state of?")
+					type=$(echo "$result" | tr '[:upper:]' '[:lower:]')
+				else
+					type="$3"
+				fi
+				case "$type" in
+					system)
+						sh "${scriptDir}/interactive/switchSystemState.sh" "--host" "${currentHost}"
+						;;
+					packages)
+						sh "${scriptDir}/interactive/switchDefaultPackageState.sh" "--host" "${currentHost}"
+						;;
+					*)
+						print_error "Invalid type \"$type\""
+						exit 1
+						;;
+				esac
+				;;
+			*)
+				print_debug "Invalid switch"
+				exit 2
+				;;
+		esac
+
+		;;
+
 esac
 
 		'';

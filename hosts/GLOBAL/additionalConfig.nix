@@ -1,4 +1,4 @@
-{ currentHost, ... }:
+{ currentHost, pkgs, ... }:
 let
 	english = "en_GB.UTF-8";
 	german = "de_DE.UTF-8";
@@ -31,5 +31,8 @@ in
     	xkb.variant = "";
   	};
 	console.keyMap = "de";
+
+
+	
   
 }

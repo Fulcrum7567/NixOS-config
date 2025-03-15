@@ -25,8 +25,8 @@
 	  boot = {
 	    extraModulePackages = [ 
 	    	config.boot.kernelPackages.xpadneo
-	    	pkgs.linuxPackages.nvidia_x11
-		  	pkgs.linuxPackages.kernel
+	    	#pkgs.linuxPackages.nvidia_x11
+		  	#pkgs.linuxPackages.kernel
 	     ];
 	    extraModprobeConfig = ''
 	      options bluetooth disable_ertm=Y

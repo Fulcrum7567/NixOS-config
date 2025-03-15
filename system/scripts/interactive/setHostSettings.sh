@@ -147,7 +147,7 @@ desktop=$(find "$path_to_dotfiles/user/desktops/profiles" -type f -printf "%P\n"
 check_abortion $desktop
 print_debug "Desktop profile set to \"$desktop\""
 
-theme=$(find "$path_to_dotfiles/user/themes" -type d -printf "%P\n" | grep -v '^$' | gum choose --header="What theme do you want to use?")
+theme=$(find "$path_to_dotfiles/user/themes/profiles" -type d -printf "%P\n" | grep -v '^$' | gum choose --header="What theme do you want to use?")
 check_abortion $theme
 print_debug "Theme set to \"$theme\""
 

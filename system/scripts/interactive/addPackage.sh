@@ -15,6 +15,8 @@ binary_name=""
 no_git=false
 state=""
 edited_file=""
+home=false
+system=false
 
 
 print_usage_force() {
@@ -27,6 +29,8 @@ print_usage_force() {
 	echo "  --name,    -n <package name>	              Pre set package name"
     echo "  --group,   -g <group name>                  Pre set group"
     echo "  --state,   -s <Stable | Unstable | Default> Pre set the package state"
+    echo "  --home,    -H                               Set as home package"
+    echo "  --system,  -S                               Set as system package"
     echo "  --binary,  -b                               Set up package as binary" 
     echo "  --no-git                                    Don't add edits to git"         
     echo ""
@@ -101,6 +105,12 @@ while [ $# -gt 0 ]; do
         --no-git)
             no_git=true
             ;;
+        --home|-H)
+            home=true
+            ;;
+        --system|-S)
+            system=true
+            ;;
         --state|-s)
             if [ -n "$2" ]; then
                 case "$2" in
@@ -152,6 +162,11 @@ if [ "$binary" = true -a "$group_given" = true ]; then
     exit 2
 fi
 
+if [ "$system" = true -a "$home" = true ]; then
+    print_error "--system and --home must not be used together"
+    exit 2
+fi
+
 
 if [ -z "$name" ]; then
     name=$(gum input --prompt="What package would you like to install? " --placeholder="Enter name...")
@@ -169,6 +184,31 @@ fi
 if [ -z "$state" ]; then
     print_debug "No state selected, exiting"
     exit 1
+fi
+
+if [ "$system" = false -a "$home" = false ]; then
+    result=$(gum choose Home System --header="As what type would you like to install the package?")
+    case "$result" in
+        Home)
+            home=true
+            ;;
+        System)
+            system=true
+            ;;
+        *)
+            print_debug "Cancelled"
+            exit 1
+            ;;
+    esac
+fi
+
+result=""
+
+type=""
+if [ "$home" = true ]; then
+    type="home"
+else
+    type="system"
 fi
 
 
@@ -192,12 +232,12 @@ if [ "$binary" = true ]; then
     if [ -z "$binary_name" ]; then
         binary_name="$name"
     fi
-    if [ -f "$path_to_dotfiles/user/packages/binaries/$binary_name.nix" ]; then
+    if [ -f "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix" ]; then
         gum confirm "A binary file with the name \"$binary_name\" already exists. Do you want to edit it?"
         if [ "$?" -eq 0 ]; then
-            $EDITOR "$path_to_dotfiles/user/packages/binaries/$binary_name.nix"
+            $EDITOR "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix"
             print_debug "Edited file"
-            add_to_git "$path_to_dotfiles/user/packages/binaries/$binary_name.nix" "Edited"
+            add_to_git "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix" "Edited"
             exit 0
         else
             exit 1
@@ -206,31 +246,43 @@ if [ "$binary" = true ]; then
     
     case "$state" in
         Stable)
-            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/stableBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$binary_name.nix")
-            pattern=".*home.packages = with pkgs-stable; \[.*"
+            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/$type/stableBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix")
+            if [ "$home" = true ]; then
+                pattern=".*home.packages = with pkgs-stable; \[.*"
+            else
+                pattern=".*environment.systemPackages = with pkgs-stable; \[.*"
+            fi
             ;;
         Unstable)
-            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/unstableBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$binary_name.nix")
-            pattern=".*home.packages = with pkgs-unstable; \[.*"
+            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/$type/unstableBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix")
+            if [ "$home" = true ]; then
+                pattern=".*home.packages = with pkgs-unstable; \[.*"
+            else
+                pattern=".*environment.systemPackages = with pkgs-unstable; \[.*"
+            fi
             ;;
         Default)
-            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/defaultBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$binary_name.nix")
-            pattern=".*home.packages = with pkgs-default; \[.*"
+            cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/$type/defaultBin.nix") $(realpath "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix")
+            if [ "$home" = true ]; then
+                pattern=".*home.packages = with pkgs-default; \[.*"
+            else
+                pattern=".*environment.systemPackages = with pkgs-default; \[.*"
+            fi
             ;;
         *)
             print_error "That should not have happened. Invalid state!"
             exit 1
             ;;
     esac
-    sed -i "/$pattern/a $insertion" $(realpath "$path_to_dotfiles/user/packages/binaries/$binary_name.nix")
-    edited_file="$path_to_dotfiles/user/packages/binaries/$binary_name.nix"
+    sed -i "/$pattern/a $insertion" $(realpath "$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix")
+    edited_file="$path_to_dotfiles/user/packages/binaries/$type/$binary_name.nix"
     message="Added package \"$name\" as binary to file \"$binary_name\""
 fi
 
 
 if [ -n "$group" ]; then
-    if [ ! -f "$path_to_dotfiles/user/packages/groups/$group.nix" ]; then
-        sh "$path_to_dotfiles/system/scripts/interactive/addPackageGroup.sh" "--name" "$group" "--no-edit" "--no-git" $cmd_debug $cmd_no_usage
+    if [ ! -f "$path_to_dotfiles/user/packages/groups/$group/$type.nix" ]; then
+        sh "$path_to_dotfiles/system/scripts/interactive/addPackageGroup.sh" "--name" "$group" "--$type" "--no-edit" "--no-git" $cmd_debug $cmd_no_usage
         if [ "$?" -ne 0 ]; then
             print_error "Something went wrong while creating the group"
             exit 2
@@ -244,7 +296,7 @@ if [ -n "$group" ]; then
             pattern="with pkgs-unstable; \["
             ;;
         Default)
-            pattern="home.packages = with pkgs-default; \["
+            pattern="with pkgs-default; \["
             ;;
         *)
             print_error "That should not have happened. Invalid state!"
@@ -253,10 +305,10 @@ if [ -n "$group" ]; then
     esac
 
     sed -i "/$pattern/ a\\
-$insertion" "$path_to_dotfiles/user/packages/groups/$group.nix"
+$insertion" "$path_to_dotfiles/user/packages/groups/$group/$type.nix"
 
     print_debug "Package \"$name\" successfully added to \"$group\""
-    edited_file="$path_to_dotfiles/user/packages/groups/$group.nix"
+    edited_file="$path_to_dotfiles/user/packages/groups/$group/$type.nix"
     message="Added package \"$name\" to group \"$group\""
 fi
 

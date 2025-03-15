@@ -67,7 +67,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$debug" = true ]; then
-    gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-output -- home-manager switch --flake "$path_to_dotfiles#user"
+    gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-output -- home-manager switch -b backup --flake "$path_to_dotfiles#user"
 else
-    gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-error -- home-manager switch --flake "$path_to_dotfiles#user"
+    gum spin --spinner="hamburger" --title="Rebuilding home-manager..." --show-error -- home-manager switch -b backup --flake "$path_to_dotfiles#user"
 fi

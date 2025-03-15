@@ -7,13 +7,6 @@ path_to_dotfiles=$(realpath "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../..
 cmd_debug=""
 cmd_no_usage=""
 
-name=""
-overwrite=false
-no_edit=false
-no_git=false
-new=false
-home=false
-system=false
 
 print_usage_force() {
     echo "Usage:" 
@@ -23,8 +16,6 @@ print_usage_force() {
     echo ""
     echo "Options:"
 	echo "  --name,    	   -n <group name>   Pre set group name"
-    echo "  --overwrite,     -o                Overwrite group if it already exists"
-    echo "  --no-edit,       -e                Do not ask for edit"
 	echo "  --no-git, 	   -g                Do not add to git"
     echo ""
     echo "  --no-usage, -u                     Don't show usage after an error"
@@ -79,9 +70,6 @@ while [ $# -gt 0 ]; do
             ;;
         --no-edit|-n)
             no_edit=true
-            ;;
-        --overwrite|-o)
-            overwrite=true
             ;;
 		--no-git|-g)
 			no_git=true
