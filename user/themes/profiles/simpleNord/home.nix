@@ -6,15 +6,27 @@
 
 	stylix = {
 		enable = true;
-		autoEnable = true;
+		autoEnable = true;	
 		image = ./../../bin/wallpapers/forest1.jpg;
 
 		polarity = "dark";
 
 		base16Scheme = "${pkgs-default.base16-schemes}/share/themes/nord.yaml";
 
-		cursor.package = pkgs-default.nordzy-cursor-theme;
-		cursor.name = "Nordzy-cursors";
+		cursor = {
+			package = pkgs-default.nordzy-cursor-theme;
+			name = "Nordzy-cursors";
+			size = 28;
+		};
+
+		
+
+		opacity = {
+			applications = 1.0;
+			terminal = 0.8;
+			desktop = 1.0;
+			popups = 0.8;
+		};
 
 		fonts = {
 			monospace = {
@@ -40,26 +52,7 @@
 			};
 		};
 
-		opacity = {
-			applications = 1.0;
-			terminal = 0.8;
-			desktop = 1.0;
-			popups = 0.8;
-		};
-
-
-
-
-		targets = {
-			kitty.enable = true;
-			gtk.enable = true;
-		};
-		
+			
 	};
-
-	#programs.kitty.settings = {
-	#	background_opacity = lib.mkForce "0.80";
-	#	modify_font = "cell_width 90%";
-	#};
 
 } 

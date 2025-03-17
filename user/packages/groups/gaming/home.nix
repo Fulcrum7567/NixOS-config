@@ -1,8 +1,9 @@
 { pkgs-default, ... }:
 {
-	imports = [
-		../../binaries/home/discord.nix
-	];
+imports = [
+   ../../binaries/home/discord.nix
+
+];
 
 	home.packages = with pkgs-default; [
 		mangohud

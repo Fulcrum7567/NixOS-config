@@ -142,6 +142,9 @@ if [ ! -d "$path_to_dotfiles/user/packages/groups/$name" ]; then
     cp "$path_to_dotfiles/system/scripts/presets/user/packages/home/group.nix" "$path_to_dotfiles/user/packages/groups/$name/home.nix"
 fi
 
+sh "$path_to_dotfiles/system/scripts/interactive/setPackageGroupImports.sh" "--name" "$name" $cmd_no_usage $cmd_debug
+
+
 if [ "$no_edit" = false ]; then
     gum confirm "Do you want to edit the group?"
     result=$?

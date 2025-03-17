@@ -93,121 +93,119 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
-if [ -z "$name" ]; then
-	name=$(gum input --prompt="What is the name of the package group? " --placeholder="Enter name...")
+if [ -n "$name" -a ! -d "$path_to_dotfiles/user/packages/groups/$name" ]; then
+    print_error "There is no group with the name \"$name\""
+    name=""
 fi
 
 if [ -z "$name" ]; then
+    name=$(find "$path_to_dotfiles/user/packages/groups" -type d -printf "%P\n" | grep -v '^$' | gum choose --header="What group do you want to edit?")
+fi
+
+if [ -z "$name" ]; then
+    print_debug "No group selected, exiting"
 	exit 1
 fi
 
-print_debug "Name set to \"$name\""
+print_debug "Group set to \"$name\""
 
 
-if [ -d "$path_to_dotfiles/user/packages/groups/$name" ]; then
-    if [ "$overwrite" = false ]; then
-        resuslt=$(gum choose Overwrite Edit Cancel --header="There already exists a group with the name \"$name\". Do you want to overwrite or edit it?")
-        if [ "$result" = "Edit" ]; then
-            edit_group
-            no_edit=true
-        elif [ "$result" = "Overwrite" ]; then
-            overwrite=true
-        else
-            exit 1
-        fi
-    fi
-    if [ "$overwrite" = true ]; then
-        rm -rf "$path_to_dotfiles/user/packages/groups/$name/"
-        print_debug "Removed group \"$name\""
-    fi
-fi
-
-if [ ! -d "$path_to_dotfiles/user/packages/groups/$name" ]; then
-    new=true
-    mkdir "$path_to_dotfiles/user/packages/groups/$name"
-    cp "$path_to_dotfiles/system/scripts/presets/user/packages/system/group.nix" "$path_to_dotfiles/user/packages/groups/$name/system.nix"
-    cp "$path_to_dotfiles/system/scripts/presets/user/packages/home/group.nix" "$path_to_dotfiles/user/packages/groups/$name/home.nix"
-fi
-
-if [ "$no_edit" = false ]; then
-    gum confirm "Do you want to edit the group?"
-    result=$?
-    if [ "$result" = 0 ]; then
-        edit_group
-    fi
-fi
+homeBinaryImports=""
+homeGroupImports=""
+systemBinaryImports=""
+systemGroupImports=""
 
 
-if [ "$no_git" = false ]; then
-    gum confirm "Do you want to add your edits to git?"
-    result=$?
-    if [ $result -eq 1 ]; then
-        no_git=true
-    fi
-fi
-
-if [ "$no_git" = false ]; then
-    git add "$path_to_dotfiles/user/packages/groups/$name/"
-    print_debug "Added to git"
-    if [ "$new" = true ]; then
-        git commit -m "[Auto generated] Added package group \"$name\""
-    else
-        git commit -m "[Auto generated] Edited package group \"$name\""
-    fi
-fi
-
-
-: '
-
-if [ -f "$path_to_dotfiles/user/packages/groups/$name/$type.nix" ]; then
-	if [ "$overwrite" = false ]; then
-		result=$(gum choose Overwrite Edit Cancel --header="There already exists a group with the name \"$name\". Do you want to overwrite or edit it?")
-		if [ "$result" = "Edit" ]; then
-			$EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$name/$type.nix")
-			no_edit=true
-		elif [ "$result" = "Overwrite" ]; then
-			overwrite=true
-		else
-			exit 1
-		fi
-	fi
-	if [ "$overwrite" = true ]; then
-		rm -rf "$path_to_dotfiles/user/packages/groups/$name/$type.nix"
-		print_debug "Removed group \"$name\""
-	fi
-fi
-
-if [ ! -f "$path_to_dotfiles/user/packages/groups/$name/$type.nix" ]; then
-
-	cp $(realpath "$path_to_dotfiles/system/scripts/presets/user/packages/$type/group.nix") "$path_to_dotfiles/user/packages/groups/$name/$type.nix"
-    print_debug "Copied file"
-fi
-
-
-if [ "$no_edit" = false ]; then
+while IFS= read -r line; do
+    # Remove leading/trailing spaces
+    line=$(echo "$line" | sed 's/^ *//;s/ *$//')
     
-	if [ $result -eq 0 ]; then
-		$EDITOR $(realpath "$path_to_dotfiles/user/packages/groups/$name/$type.nix")
-        print_debug "Edited group"
-	fi
-fi
+    # Match binary imports
+    case "$line" in
+        *"../../binaries/home/"*)
+            homeBinaryImports="$homeBinaryImports,$(echo "$line" | sed -n 's|.*../../binaries/home/\([a-zA-Z0-9_-]*\).nix.*|\1|p')"
+            ;;
+        *"../"*)
+            homeGroupImports="$homeGroupImports,$(echo "$line" | sed -n 's|.*../\([a-zA-Z0-9_-]*\)/home.nix.*|\1|p')"
+            ;;
+    esac
+done < "$path_to_dotfiles/user/packages/groups/$name/home.nix"
 
-if [ "$no_git" = false ]; then
-	gum confirm "Do you want to add your edits to git?"
-    result=$?
-	if [ $result -eq 1 ]; then
-		no_git=true
-	fi
-fi
 
-if [ "$no_git" = false ]; then
-	git add "$path_to_dotfiles/user/packages/groups/$name/$type.nix"
-    print_debug "Added to git"
-	if [ "$new" = true ]; then
-		git commit -m "[Auto generated] Added package group \"$name\""
-	else
-		git commit -m "[Auto generated] Edited package group \"$name\""
-	fi
-fi
-'
+
+while IFS= read -r line; do
+    # Remove leading/trailing spaces
+    line=$(echo "$line" | sed 's/^ *//;s/ *$//')
+    
+    # Match binary imports
+    case "$line" in
+        *"../../binaries/system/"*)
+            systemBinaryImports="$systemBinaryImports,$(echo "$line" | sed -n 's|.*../../binaries/system/\([a-zA-Z0-9_-]*\).nix.*|\1|p')"
+            ;;
+        *"../"*)
+            systemGroupImports="$systemGroupImports,$(echo "$line" | sed -n 's|.*../\([a-zA-Z0-9_-]*\)/system.nix.*|\1|p')"
+            ;;
+    esac
+done < "$path_to_dotfiles/user/packages/groups/$name/system.nix"
+
+homeBinaryImports=$(echo "$homeBinaryImports" | sed 's/^,//')
+homeGroupImports=$(echo "$homeGroupImports" | sed 's/^,//')
+systemBinaryImports=$(echo "$systemBinaryImports" | sed 's/^,//')
+systemGroupImports=$(echo "$systemGroupImports" | sed 's/^,//')
+
+
+homeBinarySelected=$(find "$path_to_dotfiles/user/packages/binaries/home" -type f -printf "%P\n" | sed 's/\.nix$//' | gum choose --no-limit --header="What (home) binaries would you like to include?" --selected="$homeBinaryImports")
+systemBinarySelected=$(find "$path_to_dotfiles/user/packages/binaries/system" -type f -printf "%P\n" | sed 's/\.nix$//' | gum choose --no-limit --header="What (system) binaries would you like to include?" --selected="$systemBinaryImports")
+
+groupsSelected=$(find "$path_to_dotfiles/user/packages/groups" -type d ! -name "$name" -printf "%P\n" | grep -v '^$' | gum choose --no-limit --header="What groups would you like to inlude?" --selected="$homeGroupImports")
+
+
+home_imports="imports = ["
+for bin in $homeBinarySelected; do
+    home_imports="$home_imports\n   ../../binaries/home/$bin.nix"
+done
+
+home_imports="$home_imports\n"
+
+for grp in $groupsSelected; do
+    home_imports="$home_imports\n   ../$grp/home.nix"
+done
+
+home_imports="$home_imports\n];"
+
+tmp_file=$(mktemp)
+
+# Preserve file structure and replace imports while keeping position
+awk -v home_imports="$home_imports" 'BEGIN {in_block=0} 
+    /imports = \[/ {in_block=1; print home_imports; next} 
+    /];/ && in_block {in_block=0; next} 
+    !in_block {print}' "$path_to_dotfiles/user/packages/groups/$name/home.nix" > "$tmp_file"
+
+# Move temporary file back to original
+mv "$tmp_file" "$path_to_dotfiles/user/packages/groups/$name/home.nix"
+
+
+system_imports="imports = ["
+for bin in $systemBinarySelected; do
+    system_imports="$system_imports\n   ../../binaries/system/$bin.nix"
+done
+
+system_imports="$system_imports\n"
+
+for grp in $groupsSelected; do
+    system_imports="$system_imports\n   ../$grp/system.nix"
+done
+
+system_imports="$system_imports\n];"
+
+tmp_file=$(mktemp)
+
+# Preserve file structure and replace imports while keeping position
+awk -v system_imports="$system_imports" 'BEGIN {in_block=0} 
+    /imports = \[/ {in_block=1; print system_imports; next} 
+    /];/ && in_block {in_block=0; next} 
+    !in_block {print}' "$path_to_dotfiles/user/packages/groups/$name/system.nix" > "$tmp_file"
+
+# Move temporary file back to original
+mv "$tmp_file" "$path_to_dotfiles/user/packages/groups/$name/system.nix"
+

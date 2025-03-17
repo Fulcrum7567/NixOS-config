@@ -20,15 +20,16 @@ print_usage_force() {
 	echo "                  system <stable | unstable?>    Select new system state"
 	echo "                  packages <stable | unstable?>  Select new default package state"
 	echo ""
-	echo "     package"
-	echo "             add <package name?>                 Install new package"
-	echo "             edit <binary name?>                 Edit existing binary package"
-	echo "             group"
-	echo "                   add <group name?>             Create new package group"
-	echo "                   edit <group name?>            Edit existing package group"
-	echo "             profile"
-	echo "                     add <profile name?>         Create new package profile"
-	echo "                     edit <profile name?>        Edit existing package profile"
+	echo "     package add <package name?>                 Install new package"
+	echo "                 group <group name?>             Create new package group"
+	echo "                 profile <profile name?>         Create new package profile"
+	echo ""
+	echo "     edit"
+	echo "          package <package name?>"
+	echo "                  group <group name?>"
+	echo "                  profile <profile name?>"
+	echo "          desktop <profile name?>"
+	echo "          theme <profile name?>"
 	echo ""
 }
 
@@ -135,8 +136,46 @@ case "$1" in
 				exit 2
 				;;
 		esac
-
 		;;
+	package)
+		if [ "$#" -lt 2 ]; then
+			print_error "Too few arguments!"
+			exit 1
+		fi
+
+		if [ "$2" = "add" ]; then
+			if [ "$#" -lt 3 ]; then
+				sh "${scriptDir}/interactive/addPackage.sh"
+			else
+				case "$3" in
+					group)
+						if [ "$#" -lt 4 ]; then
+							sh "${scriptDir}/interactive/addPackageGroup.sh"
+						else
+							sh "${scriptDir}/interactive/addPackageGroup.sh" "--name" "$4"
+						fi
+						;;
+					profile)
+						if [ "$#" -lt 4 ]; then
+							sh "${scriptDir}/interactive/addPackageProfile.sh"
+						else
+							"${scriptDir}/interactive/addPackageProfile.sh" "--name" "$4"
+						fi
+						;;
+					*)
+						sh "${scriptDir}/interactive/addPackage.sh" "--name" "$3"
+						;;
+				esac
+			fi
+		fi
+	;;
+	edit)
+		print_error "Not yet implemented"
+	;;
+
+	*)
+		print_error "Invalid Argument \"$1\""
+	;;
 
 esac
 

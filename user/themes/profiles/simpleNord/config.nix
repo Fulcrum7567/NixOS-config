@@ -11,10 +11,11 @@
 		homeManagerIntegration.followSystem = true;
 		homeManagerIntegration.autoImport = true;
 
+		base16Scheme = "${pkgs-default.base16-schemes}/share/themes/nord.yaml";
+		
 
 	};
-	stylix.base16Scheme = "${pkgs-default.base16-schemes}/share/themes/nord.yaml";
-
+	
 	boot.plymouth.enable = true;
 	
 } 
