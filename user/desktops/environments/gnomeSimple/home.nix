@@ -1,4 +1,4 @@
-{ lib, browserSettings, terminalSettings, pkgs-default, ... }:
+{ lib, browserSettings, terminalSettings, explorerSettings, pkgs-default, ... }:
 
 	with lib.hm.gvariant;
 {
@@ -80,7 +80,7 @@
 	    };
 
 	    "org/gnome/shell" = {
-			favorite-apps = [ browserSettings.gnomeAppName terminalSettings.gnomeAppName "org.gnome.Nautilus.desktop" ];
+			favorite-apps = [ browserSettings.gnomeAppName terminalSettings.gnomeAppName explorerSettings.gnomeAppName ];
 			welcome-dialog-last-shown-version = "99.2";
 			remember-mount-password = true;
 	    };

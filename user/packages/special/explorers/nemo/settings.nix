@@ -1,0 +1,3 @@
+{
+	gnomeAppName = "nemo.desktop"	
+} 

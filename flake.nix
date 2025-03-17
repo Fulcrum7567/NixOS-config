@@ -96,6 +96,8 @@
 		browserSettings = ( import ./user/packages/special/browsers/${userSettings.browser}/settings.nix);
 
 		terminalSettings = (import ./user/packages/special/terminals/${userSettings.terminal}/settings.nix);
+
+		explorerSettings = (import ./user/packages/special/explorers/${userSettings.explorer}/settings.nix);
 		
 
 
@@ -234,6 +236,7 @@
 					./user/packages/special/editors/${userSettings.editor}/app.nix
 					./user/packages/special/terminals/${userSettings.terminal}/app.nix
 					./user/packages/special/browsers/${userSettings.browser}/app.nix
+					./user/packages/special/explorers/${userSettings.explorer}/app.nix
 					./user/packages/special/shell/home.nix
 
 					./user/packages/profiles/${hostSettings.packageProfile}/home.nix
@@ -243,7 +246,7 @@
 				];
 
 				extraSpecialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings terminalSettings;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings terminalSettings explorerSettings;
 				};
 			};
 		};
