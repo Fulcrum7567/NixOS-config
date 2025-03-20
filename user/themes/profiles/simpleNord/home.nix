@@ -2,6 +2,11 @@
 {
 	imports = [
 		stylix-module.homeManagerModules.stylix
+		./wm/hyprland/animations.nix
+		./wm/hyprland/decoration.nix
+		./wm/hyprland/general.nix
+		./wm/hyprland/miscellaneous.nix
+
 	];
 
 	stylix = {
@@ -19,7 +24,10 @@
 			size = 28;
 		};
 
-		
+		targets = {
+			waybar.enable = false;
+
+		};
 
 		opacity = {
 			applications = 1.0;

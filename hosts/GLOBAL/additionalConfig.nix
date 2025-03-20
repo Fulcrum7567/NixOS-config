@@ -33,6 +33,14 @@ in
 	console.keyMap = "de";
 
 
-	
+	environment.etc."xdg/nemo/actions/open_terminal.nemo_action".text = ''
+    [Nemo Action]
+    Name=Open Terminal
+    Comment=Open terminal in current directory
+    Exec=kitty --working-directory=%U
+    Icon-Name=utilities-terminal
+    Selection=any
+    Extensions=dir;inode/directory;
+  '';
   
 }

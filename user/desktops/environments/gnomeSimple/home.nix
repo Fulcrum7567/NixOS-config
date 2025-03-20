@@ -1,4 +1,4 @@
-{ lib, browserSettings, terminalSettings, explorerSettings, pkgs-default, ... }:
+{ lib, browserSettings, terminalSettings, explorerSettings, pkgs-default, userSettings, ... }:
 
 	with lib.hm.gvariant;
 {
@@ -9,6 +9,10 @@
 	
 
 	dconf.settings = {
+
+	    "org/gnome/desktop/default-applications/terminal" = {
+	    	exec = "kitty";
+	    };
 
 		"42096a05-427c-4a06-b853-382c22ebc1be" = {
 	      apps = [ "Counter-Strike 2.desktop" "discord-canary.desktop" "net.lutris.Lutris.desktop" "Split Fiction.desktop" "steam.desktop" ];

@@ -1,3 +1,3 @@
 {
-	gnomeAppName = "nemo.desktop"	
+	gnomeAppName = "nemo.desktop";
 } 

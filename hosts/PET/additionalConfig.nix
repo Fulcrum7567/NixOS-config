@@ -71,7 +71,7 @@
 	services.udev.packages = with pkgs; [ libinput ];
 
 
-  services.xserver.libinput.enable = true;
+  	services.libinput.enable = true;
 
 
 	boot.kernelPackages = pkgs.linuxPackages_latest;

@@ -1,9 +1,0 @@
-diff --git a/nvidia/nv.c b/nvidia/nv.c
-index <old>..<new> 100644
---- a/nvidia/nv.c
-+++ b/nvidia/nv.c
-@@
-- MODULE_IMPORT_NS(DMA_BUF);
-+ #ifdef DMA_BUF
-+ MODULE_IMPORT_NS(DMA_BUF);
-+ #endif

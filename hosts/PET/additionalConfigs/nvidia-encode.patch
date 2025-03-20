@@ -1,7 +1,0 @@
-diff --git a/nvidia/nv-mmap.c b/nvidia/nv-mmap.c
-index <old>..<new> 100644
---- a/nvidia/nv-mmap.c
-+++ b/nvidia/nv-mmap.c
-@@
-- int nv_encode_caching(pgprot_t *p, NvU32 flags, nv_memory_type_t type) {
-+ int nv_encode_caching(pgprot_t *p, NvU32 flags, NvU32 type) {

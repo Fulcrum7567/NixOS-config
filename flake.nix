@@ -47,6 +47,60 @@
 		nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
 
+
+		hyprland-stable = {
+	      	url = "github:hyprwm/Hyprland";
+	      	inputs.nixpkgs.follows = "nixpkgs-stable";
+	    };
+
+	    hyprland-unstable = {
+	      	url = "github:hyprwm/Hyprland";
+	      	inputs.nixpkgs.follows = "nixpkgs-unstable";
+	    };
+
+
+	    hyprland-plugins-stable = {
+	    	url = "github:hyprwm/hyprland-plugins";
+	    	inputs.hyprland.follows = "hyprland-stable";
+	    };
+
+	    hyprland-plugins-unstable = {
+	    	url = "github:hyprwm/hyprland-plugins";
+	    	inputs.hyprland.follows = "hyprland-unstable";
+	    };
+
+
+	    hyprgrass-stable = {
+	    	url = "github:horriblename/hyprgrass";
+	    	inputs.hyprland.follows = "hyprland-stable";
+	    };
+
+	    hyprgrass-unstable = {
+	    	url = "github:horriblename/hyprgrass";
+	    	inputs.hyprland.follows = "hyprland-unstable";
+	    };
+
+	    hyprspace-stable = {
+	    	url = "github:KZDKM/Hyprspace";
+			inputs.hyprland.follows = "hyprland-stable";
+	    };
+
+	    hyprspace-unstable = {
+	    	url = "github:KZDKM/Hyprspace";
+			inputs.hyprland.follows = "hyprland-unstable";
+	    };
+
+	    hypr-dynamic-cursors-stable = {
+	        url = "github:VirtCode/hypr-dynamic-cursors";
+	        inputs.hyprland.follows = "hyprland-stable"; # to make sure that the plugin is built for the correct version of hyprland
+	    };
+
+	    hypr-dynamic-cursors-unstable = {
+	        url = "github:VirtCode/hypr-dynamic-cursors";
+	        inputs.hyprland.follows = "hyprland-unstable"; # to make sure that the plugin is built for the correct version of hyprland
+	    };
+
+
 		# ╔════════════════════════════════╗
 		# ║                                ║
 		# ║                                ║
@@ -68,7 +122,7 @@
 
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, ... }:
+	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, hyprland-stable, hyprland-unstable, hyprland-plugins-stable, hyprland-plugins-unstable, hyprgrass-stable, hyprgrass-unstable, hyprspace-stable, hyprspace-unstable, hypr-dynamic-cursors-stable, hypr-dynamic-cursors-unstable, ... }:
 	let
 
 		# ╔═══════════════════════════════════════════════════════════╗
@@ -96,6 +150,8 @@
 		browserSettings = ( import ./user/packages/special/browsers/${userSettings.browser}/settings.nix);
 
 		terminalSettings = (import ./user/packages/special/terminals/${userSettings.terminal}/settings.nix);
+
+		editorSettings = (import ./user/packages/special/editors/${userSettings.editor}/settings.nix);
 
 		explorerSettings = (import ./user/packages/special/explorers/${userSettings.explorer}/settings.nix);
 		
@@ -173,6 +229,43 @@
 						stylix-unstable
 				);
 
+		hyprland = (if (hostSettings.systemState == "stable")
+					then
+						hyprland-stable
+					else
+						hyprland-unstable
+			);
+
+		hyprland-plugins = (if (hostSettings.systemState == "stable")
+					then
+						hyprland-plugins-stable
+					else
+						hyprland-plugins-unstable
+			);
+
+		hyprgrass = (if (hostSettings.systemState == "stable")
+					then
+						hyprgrass-stable
+					else
+						hyprgrass-unstable
+			);
+
+		hyprspace = (if (hostSettings.systemState == "stable")
+					then
+						hyprspace-stable
+					else
+						hyprspace-unstable
+			);
+
+		hypr-dynamic-cursors = (if (hostSettings.systemState == "stable")
+					then
+						hypr-dynamic-cursors-stable
+					else
+						hypr-dynamic-cursors-unstable
+			);
+
+		
+
 	in 
 	{
 
@@ -218,7 +311,7 @@
 
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost hyprland;
 				};
 			};
 		};
@@ -246,7 +339,7 @@
 				];
 
 				extraSpecialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings terminalSettings explorerSettings;
+					inherit currentHost pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings editorSettings terminalSettings explorerSettings hyprland hyprland-plugins hyprgrass hyprspace hypr-dynamic-cursors;
 				};
 			};
 		};
