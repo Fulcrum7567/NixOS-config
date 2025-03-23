@@ -2,9 +2,8 @@
 {
 	programs.waybar.settings.mainBar = {
 		"backlight" = {
-		    "device" = "intel_backlight";
-		    "format" = "{percent}% {icon}";
-		    "format-icons" = ["" ""];
+			on-scroll-up = "brightnessctl -q set 5%+";
+			on-scroll-down = "brightnessctl -q set 5%-";
 		};
 	};
 } 

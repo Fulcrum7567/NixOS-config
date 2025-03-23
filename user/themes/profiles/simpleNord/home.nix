@@ -6,6 +6,16 @@
 		./wm/hyprland/decoration.nix
 		./wm/hyprland/general.nix
 		./wm/hyprland/miscellaneous.nix
+		../../bin/apps/waybar/modules/backlight/backlight1.nix
+		../../bin/apps/waybar/modules/bluetooth/bluetooth1.nix
+		../../bin/apps/waybar/modules/network/network1.nix
+		../../bin/apps/waybar/modules/pulseAudio/pulseAudio1.nix
+		../../bin/apps/waybar/modules/cava/cava1.nix
+		../../bin/apps/waybar/modules/hyprland/window/window1.nix
+		../../bin/apps/waybar/modules/mpris/mpris1.nix
+
+
+		../../bin/apps/waybar/general/general1.nix
 
 	];
 

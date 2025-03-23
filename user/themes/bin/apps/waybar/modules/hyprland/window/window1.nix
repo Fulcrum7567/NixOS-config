@@ -2,7 +2,8 @@
 {
 	programs.waybar.settings.mainBar = {
 		"hyprland/window" = {
-		    "separate-outputs" = true;
+			max-length = 20;
+		    "format" = "{title}";
 		};
 	};
 } 

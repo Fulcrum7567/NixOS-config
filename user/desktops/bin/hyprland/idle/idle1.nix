@@ -40,7 +40,7 @@
 
 			    {
 			    	timeout = 600;
-			    	on-timeout = "systemctl suspend";
+			    	on-timeout = "brightnessctl -r && systemctl suspend";
 			    }
 			    
 

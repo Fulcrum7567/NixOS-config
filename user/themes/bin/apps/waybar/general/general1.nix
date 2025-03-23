@@ -1,0 +1,6 @@
+{ ... }:
+{
+	programs.waybar.style = ''
+		
+	'';
+} 

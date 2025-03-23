@@ -10,6 +10,8 @@
 		../modules/cava/cava1.nix
 		../modules/hyprland/window/window1.nix
 		../modules/mpris/mpris1.nix
+		../modules/network/network1.nix
+		../modules/privacy/privacy1.nix
 
 	];
 
@@ -17,8 +19,7 @@
 
 	home.packages = with pkgs-stable; [
 		nerdfonts
-		
-
+		google-fonts
 	];
 
 
@@ -27,11 +28,11 @@
 		package = pkgs-default.waybar;
 		settings = {
 			mainBar = {
-				height = 25;
+				height = 27;
 				layer = "top";
 				modules-left = [ "hyprland/workspaces" "cava" ];
 				modules-center = [ "hyprland/window" "clock" "mpris" ];
-				modules-right = [ "tray" "backlight" "bluetooth" "pulseaudio" ] ++ (
+				modules-right = [ "tray" "backlight" "bluetooth" "network" "pulseaudio" ] ++ (
 					if (hostSettings.systemType == "laptop") then
 						[ "battery" "power-profiles-daemon" ]
 					else

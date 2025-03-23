@@ -139,6 +139,14 @@ fi
 check_abortion $gpu_manufacturer
 print_debug "GPU manufacturer set to \"$gpu_manufacturer\""
 
+device_type=$(gum choose Desktop Laptop Custom --header="What type is this device?")
+if [ "$device_type" = "Custom" ]; then
+    device_type=$(gum input --prompt="What is your device type?" --placeholder="Enter name...")
+fi
+check_abortion $device_type
+device_type=$(echo "$device_type" | tr '[:upper:]' '[:lower:]')
+print_debug "Device type set to \"$device_type\""
+
 package_profile=$(find "$path_to_dotfiles/user/packages/profiles" -type f -printf "%P\n" | sed 's/\.nix$//' | gum choose --header="What package profile do you want to use?")
 check_abortion $package_profile
 print_debug "Package profile set to \"$package_profile\""
@@ -154,6 +162,7 @@ print_debug "Theme set to \"$theme\""
 echo "{
     system = \"$system_type\";
     systemState = \"$system_state\";
+    system_type = \"$device_type\";
     defaultPackageState = \"$default_package_state\";
     gpuManufacturer = \"$gpu_manufacturer\";
     packageProfile = \"$package_profile\";

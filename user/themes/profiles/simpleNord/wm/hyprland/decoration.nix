@@ -1,9 +1,9 @@
 { ... }:
 {
 	wayland.windowManager.hyprland.settings = {
-	# https://wiki.hyprland.org/Configuring/Variables/#decoration
-	decoration = {
-		rounding = 10;
+		# https://wiki.hyprland.org/Configuring/Variables/#decoration
+		decoration = {
+			rounding = 10;
 
 			# Change transparency of focused and unfocused windows
 			active_opacity = 1.0;

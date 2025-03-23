@@ -5,6 +5,6 @@
     defaultPackageState = "stable";
     gpuManufacturer = "nvidia";
     packageProfile = "Profile1";
-    desktop = "gnomeAndHyprland (sddm)";
+    desktop = "onlyGnome";
     theme = "simpleNord";
 }

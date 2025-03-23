@@ -34,7 +34,7 @@ in
 			"$mainMod, M, exit"
 			"$mainMod, E, exec, $fileExplorer"
 			"$mainMod, V, togglefloating,"
-			"$mainMod, R, exec, $menu"
+			"$mainMod, SUPER_L, exec, $menu"
 
 			# Switch workspaces with mainMod + [0-9]
 			"$mainMod, 1, workspace, 1"
