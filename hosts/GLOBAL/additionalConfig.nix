@@ -4,6 +4,10 @@ let
 	german = "de_DE.UTF-8";
 in
 {
+
+	imports = [
+		./hardware/system/bluetooth.nix
+	];
 	nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 	nixpkgs.config.allowUnfree = true;
@@ -32,6 +36,9 @@ in
   	};
 	console.keyMap = "de";
 
+	environment.variables = {
+		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = 0;
+	};
 
 	environment.etc."xdg/nemo/actions/open_terminal.nemo_action".text = ''
     [Nemo Action]

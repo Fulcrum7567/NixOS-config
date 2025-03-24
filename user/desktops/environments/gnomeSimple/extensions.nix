@@ -7,9 +7,9 @@
 		dash-to-dock
 		just-perfection
 		middle-click-to-close-in-overview
-		tray-icons-reloaded
 		grand-theft-focus
 		window-title-is-back
+		appindicator
 	];
 
 	dconf.settings = {
@@ -22,9 +22,9 @@
 				"dash-to-dock@micxgx.gmail.com"
 				#"just-perfection-desktop@just-perfection"   # BROKEN!!!
 				"middleclickclose@paolo.tranquilli.gmail.com"
-				"trayIconsReloaded@selfmade.pl"
 				"grand-theft-focus@zalckos.github.com"
 				"window-title-is-back@fthx"
+				"appindicatorsupport@rgcjonas.gmail.com"
 			];
 		};
 

@@ -3,6 +3,7 @@
 
 	imports = [
 		../../binaries/home/git.nix
+		../../binaries/home/droidcam.nix
 		# define on what group this group is based on
 	];
 
@@ -10,6 +11,7 @@
 		# packages that use the default package state
 		gum
 		dconf-editor
+		libnotify
 
 	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch

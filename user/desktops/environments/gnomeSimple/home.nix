@@ -14,23 +14,6 @@
 	    	exec = "kitty";
 	    };
 
-		"42096a05-427c-4a06-b853-382c22ebc1be" = {
-	      apps = [ "Counter-Strike 2.desktop" "discord-canary.desktop" "net.lutris.Lutris.desktop" "Split Fiction.desktop" "steam.desktop" ];
-	      name = "Games";
-	    };
-
-	    "6335ebd3-dcf3-471f-9987-fbce3d8b6c73" = {
-	      apps = [ "blueman-manager.desktop" "ca.desrt.dconf-editor.desktop" "org.gnome.baobab.desktop" "org.gnome.DiskUtility.desktop" "org.gnome.Extensions.desktop" "org.gnome.FileRoller.desktop" "nvidia-settings.desktop" "rog-control-center.desktop" "org.gnome.Settings.desktop" "org.gnome.SystemMonitor.desktop" ];
-	      name = "System";
-	      translate = false;
-	    };
-
-	    "e915df37-8928-4a1c-91cb-91c1d22a815c" = {
-	      apps = [ "org.gnome.Calculator.desktop" "org.gnome.Calendar.desktop" "org.gnome.Snapshot.desktop" "org.gnome.Characters.desktop" "org.gnome.clocks.desktop" "org.gnome.Connections.desktop" "org.gnome.Console.desktop" "org.gnome.Contacts.desktop" "org.gnome.font-viewer.desktop" "org.gnome.Loupe.desktop" "org.gnome.seahorse.Application.desktop" "sublime_text.desktop" "org.gnome.TextEditor.desktop" "org.gnome.Weather.desktop" ];
-	      name = "Tools";
-	      translate = false;
-	    };
-
 		"org/gnome/desktop/interface" = {
 			enable-animations = true;
 			enable-hot-corners = false;
@@ -64,6 +47,8 @@
 		"org/gnome/mutter" = {
 			edge-tiling = true;
 			dynamic-workspaces = true;
+			workspaces-only-on-primary = false;
+			experimental-features = [ "scale-monitor-framebuffer" "xwayland-native-scaling" ];
 		};
 
 		"org/gtk/gtk4/settings/file-chooser" = {
@@ -87,6 +72,7 @@
 			welcome-dialog-last-shown-version = "99.2";
 			remember-mount-password = true;
 	    };
+
 
 	    "org/gnome/Console" = {
 			font-scale = 1.4000000000000004;

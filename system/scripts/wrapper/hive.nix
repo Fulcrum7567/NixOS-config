@@ -1,6 +1,6 @@
 { pkgs-default, currentHost, ... }:
 	let
-		scriptDir = "/home/fulcrum/testConfig/system/scripts";
+		scriptDir = "/home/fulcrum/.dotfiles/system/scripts";
 		script = ''
 			#!/bin/sh
 
