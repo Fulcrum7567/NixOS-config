@@ -64,7 +64,6 @@
 		"org/gnome/mutter" = {
 			edge-tiling = true;
 			dynamic-workspaces = true;
-			experimental-features = [ "scale-monitor-framebuffer" "xwayland-native-scaling" ];
 		};
 
 		"org/gtk/gtk4/settings/file-chooser" = {

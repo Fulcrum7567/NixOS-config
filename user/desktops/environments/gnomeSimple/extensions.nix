@@ -20,7 +20,7 @@
 				"AlphabeticalAppGrid@stuarthayhurst"
 				"clipboard-indicator@tudmotu.com"
 				"dash-to-dock@micxgx.gmail.com"
-				"just-perfection-desktop@just-perfection"
+				#"just-perfection-desktop@just-perfection"   # BROKEN!!!
 				"middleclickclose@paolo.tranquilli.gmail.com"
 				"trayIconsReloaded@selfmade.pl"
 				"grand-theft-focus@zalckos.github.com"
