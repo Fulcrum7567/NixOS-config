@@ -2,16 +2,12 @@
 {
 
 	imports = [
-		../../binaries/home/git.nix
-		../security/home.nix
 		# define on what group this group is based on
 	];
 
-	home.packages = with pkgs-default; [
+	environment.systemPackages = with pkgs-default; [
 		# packages that use the default package state
-		gum
-		dconf-editor
-		libnotify
+		
 
 	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch

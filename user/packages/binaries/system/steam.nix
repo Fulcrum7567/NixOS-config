@@ -19,4 +19,5 @@
 	environment.variables = {
   		"STEAM_FORCE_WAYLAND" = "1";
 	};
-} 
+
+}

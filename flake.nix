@@ -47,6 +47,8 @@
 		nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
 
+		sops-nix.url = "github:Mic92/sops-nix";
+
 
 		hyprland-stable = {
 	      	url = "github:hyprwm/Hyprland";
@@ -122,7 +124,7 @@
 
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, hyprland-stable, hyprland-unstable, hyprland-plugins-stable, hyprland-plugins-unstable, hyprgrass-stable, hyprgrass-unstable, hyprspace-stable, hyprspace-unstable, hypr-dynamic-cursors-stable, hypr-dynamic-cursors-unstable, ... }:
+	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, hyprland-stable, hyprland-unstable, hyprland-plugins-stable, hyprland-plugins-unstable, hyprgrass-stable, hyprgrass-unstable, hyprspace-stable, hyprspace-unstable, hypr-dynamic-cursors-stable, hypr-dynamic-cursors-unstable, sops-nix, ... }:
 	let
 
 		# ╔═══════════════════════════════════════════════════════════╗
@@ -311,7 +313,7 @@
 
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost hyprland;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost hyprland hostSettings;
 				};
 			};
 		};
@@ -339,7 +341,7 @@
 				];
 
 				extraSpecialArgs = {
-					inherit currentHost pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings editorSettings terminalSettings explorerSettings hyprland hyprland-plugins hyprgrass hyprspace hypr-dynamic-cursors;
+					inherit currentHost pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings editorSettings terminalSettings explorerSettings hyprland hyprland-plugins hyprgrass hyprspace hypr-dynamic-cursors sops-nix;
 				};
 			};
 		};

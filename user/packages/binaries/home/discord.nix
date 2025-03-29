@@ -1,10 +1,15 @@
-{ pkgs-default, lib, ... }:
+{ pkgs-default, lib, userSettings, config, ... }:
 {
+
+
 	home.packages = with pkgs-default; [
-		discord-canary
-		betterdiscordctl
+		(discord-canary.override {
+      withOpenASAR = true;
+      withVencord = true;
+    })
 	];
 
+  /*
 
   # Auto install betterdiscord
 
@@ -29,4 +34,11 @@
     };
   };
 
+  # betterdiscord files
+
+  home.activation.createConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    echo "{ \"midnight (nord)\": true }" > ${config.xdg.configHome}/BetterDiscord/data/canary/themes.json
+  '';
+
+  */
 } 

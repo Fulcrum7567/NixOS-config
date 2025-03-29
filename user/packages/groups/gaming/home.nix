@@ -2,13 +2,15 @@
 {
 imports = [
    ../../binaries/home/discord.nix
+   ../../binaries/home/minecraft.nix
 
 ];
 
 	home.packages = with pkgs-default; [
 		mangohud
 		protonup
-		lutris		
+		lutris
+		heroic
 	];
 
 	home.sessionVariables = {

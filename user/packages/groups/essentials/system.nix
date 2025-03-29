@@ -3,6 +3,7 @@
 
 	imports = [
 		../../binaries/system/home-manager.nix
+		../../binaries/system/droidcam.nix
 		# define on what group this group is based on
 	];
 

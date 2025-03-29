@@ -4,10 +4,9 @@
    imports = [
       "${inputs.nixos-hardware}/gigabyte/b550/default.nix"
    ];
+
+   
    hardware.graphics.enable = true;
-   hardware.opengl = {
-      enable = true;
-   };
 
    
    services.xserver = {
@@ -37,11 +36,12 @@
 
 
    # Drives:
-
-   fileSystems."/mnt/ssd-games" = {
+   
+   
+   fileSystems."/mnt/SSD-Games" = {
       device = "/dev/nvme0n1p5";
-      fsType = "ntfs-3g";
-      options = [ "uid=1000" "gid=1000" "umask=0022" "windows_names" "big_writes" ];
+      fsType = "ext4";
+      options = [ "defaults" ];
    };
 
    fileSystems."/mnt/hdd" = {
@@ -49,7 +49,8 @@
       fsType = "ntfs-3g";
       options = [ "uid=1000" "gid=1000" "umask=0022" "windows_names" "big_writes" ];
    };
-
+   
+   
 
    security.rtkit.enable = true;
    services.pipewire = {

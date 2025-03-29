@@ -40,14 +40,7 @@
 	      pipeline = "pipeline_default";
 	    };
 
-	    "org/gnome/shell/extensions/blur-my-shell/dash-to-dock" = {
-	      blur = true;
-	      brightness = 0.6;
-	      pipeline = "pipeline_default_rounded";
-	      sigma = 30;
-	      static-blur = true;
-	      style-dash-to-dock = 0;
-	    };
+	    
 
 	    "org/gnome/shell/extensions/blur-my-shell/lockscreen" = {
 	      pipeline = "pipeline_default";
@@ -102,24 +95,31 @@
 	      apply-custom-theme = false;
 	      background-color = "rgb(36,31,49)";
 	      background-opacity = 0.8;
+	      click-action = "minimize";
 	      custom-background-color = true;
+	      custom-theme-customize-running-dots = false;
 	      customize-alphas = true;
 	      dash-max-icon-size = 48;
 	      dock-position = "BOTTOM";
 	      height-fraction = 0.9;
 	      intellihide-mode = "FOCUS_APPLICATION_WINDOWS";
+	      isolate-workspaces = true;
 	      max-alpha = 0.7;
 	      middle-click-action = "quit";
-	      preferred-monitor = -2;
-	      preferred-monitor-by-connector = "eDP-1";
+	      multi-monitor = true;
 	      preview-size-scale = 0.0;
-	      running-indicator-style = "DEFAULT";
+	      running-indicator-style = "DOTS";
 	      scroll-action = "cycle-windows";
 	      shift-click-action = "launch";
 	      shift-middle-click-action = "launch";
-	      show-show-apps-button = false;
+	      shortcut = [];
+	      shortcut-text = "";
+	      show-apps-at-top = false;
+	      show-mounts = false;
+	      show-show-apps-button = true;
 	      show-trash = false;
 	      transparency-mode = "DYNAMIC";
+	      blur = true;
 	    };
 
 
