@@ -22,7 +22,7 @@
 	stylix = {
 		enable = true;
 		autoEnable = true;	
-		image = ./../../bin/wallpapers/forest1.jpg;
+		image = ./../../bin/wallpapers/yourName.png;
 
 		polarity = "dark";
 

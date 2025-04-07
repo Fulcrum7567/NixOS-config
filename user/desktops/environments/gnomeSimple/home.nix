@@ -22,17 +22,43 @@
 		};
 
 		"org/gnome/desktop/wm/keybindings" = {
+			always-on-top = [ "<Control><Super>t" ];
+			begin-move = [];
+			begin-resize = [];
 			close = [ "<Super>q" ];
+			cycle-group = [];
+			cycle-group-backward = [];
+			cycle-panels = [];
+			cycle-panels-backward = [];
+			cycle-windows = [];
+			cycle-windows-backward = [];
+			move-to-monitor-down = [ "<Alt><Super>Down" ];
+			move-to-monitor-left = [ "<Alt><Super>Left" ];
+			move-to-monitor-right = [ "<Alt><Super>Right" ];
+			move-to-monitor-up = [ "<Alt><Super>Up" ];
 			move-to-workspace-1 = [ "<Shift><Super>1" ];
 			move-to-workspace-2 = [ "<Shift><Super>2" ];
 			move-to-workspace-3 = [ "<Shift><Super>3" ];
 			move-to-workspace-4 = [ "<Shift><Super>4" ];
+			move-to-workspace-left = [ "<Shift><Super>Left" ];
+			move-to-workspace-right = [ "<Shift><Super>Right" ];
+			show-desktop = [ "<Super>d" ];
 			switch-applications = [];
 			switch-applications-backward = [];
+			switch-input-source = [];
+			switch-input-source-backward = [];
+			switch-panels = [];
+			switch-panels-backward = [];
+			switch-to-workspace-1 = [ "<Control><Super>1" ];
+			switch-to-workspace-2 = [ "<Control><Super>2" ];
+			switch-to-workspace-3 = [ "<Control><Super>3" ];
+			switch-to-workspace-4 = [ "<Control><Super>4" ];
 			switch-to-workspace-left = [ "<Control><Super>Left" ];
 			switch-to-workspace-right = [ "<Control><Super>Right" ];
 			switch-windows = [ "<Alt>Tab" ];
 			switch-windows-backward = [ "<Shift><Alt>Tab" ];
+			toggle-fullscreen = [ "F11" ];
+			toggle-maximized = [];
 		};
 
 		"org/gnome/desktop/peripherals/touchpad" = {

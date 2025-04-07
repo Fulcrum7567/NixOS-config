@@ -5,13 +5,20 @@
 	];
 
 	# From https://asus-linux.org/guides/nixos/
+
+
+	boot.kernelPackages = pkgs.linuxPackages_latest;
+
 	services.supergfxd.enable = true;
+
+	/* BROKEN
 	services = {
 	    asusd = {
 	      enable = true;
 	     	enableUserService = true;
 	    };
 	};
+	*/
 
 		
 	# Enable OpenGL
@@ -65,22 +72,23 @@
 	};
 
 
-	# TODO
 	
-
+	# Fixing touchpad
 	services.udev.packages = with pkgs; [ libinput ];
-
-
   	services.libinput.enable = true;
+	boot.kernelModules = [ "hid-multitouch" "i2c-hid" ]; 
+ 
 
+	# Fixed suspend error
+	boot.kernelParams = [
+	    "mmc_core.disable_uhs2=1"
+	];   
 
-	boot.kernelPackages = pkgs.linuxPackages_latest;
-
-	boot.kernelModules = [ "hid-multitouch" "i2c-hid" ];    
-
+	/* DISABLED
 	services.udev.extraRules = ''
 	  ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="on"
 	'';
+	*/
 
 
 }

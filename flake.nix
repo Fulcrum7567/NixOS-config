@@ -313,7 +313,7 @@
 
 				];
 				specialArgs = {
-					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost hyprland hostSettings;
+					inherit pkgs-default pkgs-stable pkgs-unstable inputs stylix-module currentHost hyprland hostSettings userSettings;
 				};
 			};
 		};
