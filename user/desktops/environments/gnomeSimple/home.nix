@@ -112,9 +112,6 @@
 	    	resize-with-right-button = true;
 	    };
 
-	    "org/gnome/desktop/wm/keybindings" = {
-	    	always-on-top = [ "<Control><Super>t" ];
-	    };
 
 	    "org/gnome/desktop/interface" = {
 	    	accent-color = "slate";

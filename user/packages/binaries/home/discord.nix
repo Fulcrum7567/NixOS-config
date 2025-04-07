@@ -4,7 +4,7 @@
 
 	home.packages = with pkgs-default; [
 		(discord-canary.override {
-      withOpenASAR = true;
+      withOpenASAR = false;
       withVencord = true;
     })
 	];

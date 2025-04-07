@@ -2,6 +2,6 @@
 {
 	imports = [
 		../gnomeBase/config.nix
-		../../bin/keyboardShortcuts/system/switchAudioOutput.nix
+		#../../bin/keyboardShortcuts/system/switchAudioOutput.nix
 	];
 } 

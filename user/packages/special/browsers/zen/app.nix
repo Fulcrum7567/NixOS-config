@@ -1,6 +1,6 @@
-{ inputs, hostSettings, pkgs, ... }:
+{ zen-browser, hostSettings, pkgs, ... }:
 {
 	home.packages = with pkgs; [
-		inputs.zen-browser.packages."${hostSettings.system}".default
+		zen-browser.packages."${hostSettings.system}".default
 	];
 } 

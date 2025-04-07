@@ -1,3 +1,3 @@
 {
-	gnomeAppName = "zen.desktop";
+	gnomeAppName = "zen-beta.desktop";
 } 

@@ -117,14 +117,21 @@
 		# ╚════════════════════════════════╝
 
 
-		zen-browser.url = "github:0xc000022070/zen-browser-flake";
+		zen-browser-stable = {
+			url = "github:0xc000022070/zen-browser-flake";
+			inputs.nixpkgs.follows = "nixpkgs-stable";
+		};
 
+		zen-browser-unstable = {
+			url = "github:0xc000022070/zen-browser-flake";
+			inputs.nixpkgs.follows = "nixpkgs-unstable";
+		};
 
 
 
 	};
 
-	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, hyprland-stable, hyprland-unstable, hyprland-plugins-stable, hyprland-plugins-unstable, hyprgrass-stable, hyprgrass-unstable, hyprspace-stable, hyprspace-unstable, hypr-dynamic-cursors-stable, hypr-dynamic-cursors-unstable, sops-nix, ... }:
+	outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager-stable, home-manager-unstable, nixos-hardware, stylix-stable, stylix-unstable, hyprland-stable, hyprland-unstable, hyprland-plugins-stable, hyprland-plugins-unstable, hyprgrass-stable, hyprgrass-unstable, hyprspace-stable, hyprspace-unstable, hypr-dynamic-cursors-stable, hypr-dynamic-cursors-unstable, sops-nix, zen-browser-stable, zen-browser-unstable, ... }:
 	let
 
 		# ╔═══════════════════════════════════════════════════════════╗
@@ -266,6 +273,13 @@
 						hypr-dynamic-cursors-unstable
 			);
 
+		zen-browser = (if (hostSettings.defaultPackageState == "stable")
+					then
+						zen-browser-unstable
+					else
+						zen-browser-unstable
+			);
+
 		
 
 	in 
@@ -341,7 +355,7 @@
 				];
 
 				extraSpecialArgs = {
-					inherit currentHost pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings editorSettings terminalSettings explorerSettings hyprland hyprland-plugins hyprgrass hyprspace hypr-dynamic-cursors sops-nix;
+					inherit currentHost pkgs-default pkgs-stable pkgs-unstable inputs hostSettings userSettings stylix-module browserSettings editorSettings terminalSettings explorerSettings hyprland hyprland-plugins hyprgrass hyprspace hypr-dynamic-cursors sops-nix zen-browser;
 				};
 			};
 		};
