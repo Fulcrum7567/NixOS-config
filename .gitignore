@@ -1,5 +1,5 @@
 # ignore script results
-./system/scripts/results/
+system/scripts/results/
 
 # don't sync current host
-./hosts/currentHost.nix
+hosts/currentHost.nix
