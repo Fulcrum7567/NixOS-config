@@ -9,7 +9,7 @@
 
 	    Name=Open in ${userSettings.terminal}
 	    Comment=Open the '${userSettings.terminal}' terminal in the selected folder
-	    Exec={terminalSettings.launchAtPath} %F
+	    Exec=${terminalSettings.launchAtPath} %F
 	    Icon-Name=${userSettings.terminal}
 	    Selection=any
 	    Extensions=dir;
