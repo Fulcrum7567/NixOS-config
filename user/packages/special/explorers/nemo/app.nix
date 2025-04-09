@@ -1,8 +1,20 @@
-{ pkgs-unstable, userSettings, ... }:
+{ pkgs-unstable, userSettings, terminalSettings, ... }:
 {
 	home.packages = with pkgs-unstable; [
 		nemo
-	];	
+	];
+
+	home.file.".local/share/nemo/actions/open-in-${userSettings.terminal}.nemo_action".text = ''
+	    [Nemo Action]
+
+	    Name=Open in ${userSettings.terminal}
+	    Comment=Open the '${userSettings.terminal}' terminal in the selected folder
+	    Exec={terminalSettings.launchAtPath} %F
+	    Icon-Name=${userSettings.terminal}
+	    Selection=any
+	    Extensions=dir;
+	    EscapeSpaces=true
+	'';
 
 	dconf.settings = {
 	    "org/nemo/preferences" = {

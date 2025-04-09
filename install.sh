@@ -132,7 +132,7 @@ else
 fi
 
 
-
+git update-index --assume-unchanged $SCRIPT_DIR/hosts/currentHost.nix
 
 
 
