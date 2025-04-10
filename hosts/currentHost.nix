@@ -3,4 +3,5 @@
 
 {
  currentHost = "Hyprdrive"; # Select, what device you're using rn. (A folder must exist with this name)
+
 }

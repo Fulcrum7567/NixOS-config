@@ -1,7 +1,8 @@
 { ... }:
 {
-imports = [
-   ../../binaries/system/steam.nix
 
-];
+   imports = [
+      ../../binaries/system/steam.nix
+
+   ];
 } 
