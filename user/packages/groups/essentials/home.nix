@@ -3,6 +3,7 @@
 
 	imports = [
 		../../binaries/home/git.nix
+		../../binaries/home/valent.nix
 		../security/home.nix
 		# define on what group this group is based on
 	];

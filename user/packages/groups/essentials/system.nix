@@ -3,7 +3,6 @@
 
 	imports = [
 		../../binaries/system/home-manager.nix
-		../../binaries/system/kdeconnect.nix
 		# define on what group this group is based on
 	];
 
