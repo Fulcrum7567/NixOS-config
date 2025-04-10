@@ -12,6 +12,7 @@
 		gum
 		dconf-editor
 		libnotify
+		easyeffects
 
 	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch

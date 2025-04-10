@@ -14,6 +14,13 @@ else
   last_notification_id=0
 fi
 
+# delete tmp file if error
+if [[ ! "$last_notification_id" =~ ^[0-9]+$ ]]; then
+  rm $ID_FILE
+  last_notification_id=0
+fi
+
+
 # Function to check if a sink name is in the skip list.
 # Usage: in_skip_list <sink_name>
 in_skip_list() {
@@ -31,7 +38,7 @@ send_notification() {
   local header="$1"
   local text="$2"
   # Capture the new notification ID from notify-send, including stderr
-  last_notification_id=$(notify-send -e -p -r "$last_notification_id" --expire-time=200 --app-name="Audio output switcher" "$header" "$text" 2>&1)
+  last_notification_id=$(notify-send -e -p -r $last_notification_id --expire-time=200 --app-name="Audio output switcher" "$header" "$text" 2>&1)
   # Save the new ID for future invocations
   echo "$last_notification_id" > "$ID_FILE"
 }

@@ -1,15 +1,16 @@
-{ pkgs, ... }:
+{ pkgs, hostSettings, ... }:
+let
+	customKitty = pkgs.kitty.overrideAttrs (oldAttrs: {
+	    postInstall = oldAttrs.postInstall or "" + ''
+	      substituteInPlace $out/share/applications/kitty.desktop \
+	        --replace "Icon=kitty" "Icon=${hostSettings.dotfilesDir}/user/themes/bin/icons/kitty.png"
+	    '';
+	});
+in
 {
-	home.packages = with pkgs; [
-		kitty
-#		(kitty.overrideAttrs (oldAttrs: {
-#      postInstall = oldAttrs.postInstall or "" + ''
-#        substituteInPlace $out/share/applications/kitty.desktop \
-#          --replace "Icon=kitty" "Icon=/home/fulcrum/testConfig/user/themes/bin/icons/kitty.png"
-#      '';
-#    }))
-	];
-
-	programs.kitty.enable = true;
+	programs.kitty = {
+		enable = true;
+		package = customKitty;
+	};
 	
 } 

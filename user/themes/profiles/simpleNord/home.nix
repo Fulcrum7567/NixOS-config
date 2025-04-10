@@ -22,7 +22,7 @@
 	stylix = {
 		enable = true;
 		autoEnable = true;	
-		image = ./../../bin/wallpapers/yourName.png;
+		image = ./../../bin/wallpapers/mountainRange2.jpg;
 
 		polarity = "dark";
 

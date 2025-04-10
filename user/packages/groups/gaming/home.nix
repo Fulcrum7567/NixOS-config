@@ -1,8 +1,8 @@
 { pkgs-default, ... }:
 {
 imports = [
-   ../../binaries/home/discord.nix
    ../../binaries/home/minecraft.nix
+   ../../binaries/home/discord.nix
 
 ];
 
