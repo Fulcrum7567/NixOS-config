@@ -91,8 +91,7 @@
 	'';
 	*/
 
-	# Set resolution for systemd-boot
-	boot.loader.systemd-boot.consoleMode = "max";
+	
 
 
 

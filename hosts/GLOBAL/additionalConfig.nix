@@ -40,14 +40,8 @@ in
 		SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS = 0;
 	};
 
-	environment.etc."xdg/nemo/actions/open_terminal.nemo_action".text = ''
-    [Nemo Action]
-    Name=Open Terminal
-    Comment=Open terminal in current directory
-    Exec=kitty --working-directory=%U
-    Icon-Name=utilities-terminal
-    Selection=any
-    Extensions=dir;inode/directory;
-  '';
+
+  	# Set resolution for systemd-boot
+	boot.loader.systemd-boot.consoleMode = "max";
   
 }
