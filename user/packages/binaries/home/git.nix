@@ -11,6 +11,13 @@
 		enable = true;
 		userName = userSettings.git.userName;
 		userEmail = userSettings.git.userEmail;
+		extraConfig = { 
+			credential = {
+				helper = "manager";
+    			"https://github.com".username = userSettings.git.userEmail;
+    			credentialStore = "cache";
+    		};
+    	};
 	};
 	
 } 
