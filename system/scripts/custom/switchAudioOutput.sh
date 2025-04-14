@@ -3,7 +3,7 @@
 # skipping any sinks defined in the SKIP_LIST by device name.
 
 # Define a list of sink names to skip.
-SKIP_LIST=("LG ULTRAGEAR" "ALC1220 Digital")
+SKIP_LIST=("ALC1220 Digital")
 
 ID_FILE="/tmp/notification_id"
 

@@ -6,10 +6,12 @@
 	  	package = pkgs-default.valent;
 	};
 
+	/*
 	dconf.settings = {
 		"ca/andyholmes/valent/" = {
 			name = currentHost;
 		};
 	};
+	*/
 
 } 

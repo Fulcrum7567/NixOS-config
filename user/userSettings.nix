@@ -11,5 +11,5 @@ rec {
 	editor = "sublime";
 	terminal = "kitty";
 	browser = "zen";
-	explorer = "nemo";
+	explorer = "nautilus";
 }

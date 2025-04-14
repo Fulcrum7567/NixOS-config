@@ -3,6 +3,8 @@
 
 	imports = [
 		../../binaries/system/home-manager.nix
+		../../binaries/system/valent.nix
+		
 		# define on what group this group is based on
 	];
 
