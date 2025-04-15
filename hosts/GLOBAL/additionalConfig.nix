@@ -43,5 +43,12 @@ in
 
   	# Set resolution for systemd-boot
 	boot.loader.systemd-boot.consoleMode = "max";
+
+	# Garbage collection
+	nix.gc = {
+		automatic = true;
+		dates = "daily";
+		options = "--delete-older-than 14d --keep-generations 10";
+	};
   
 }
