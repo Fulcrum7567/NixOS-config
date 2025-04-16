@@ -7,5 +7,5 @@
     packageProfile = "Work";
     desktop = "onlyGnome";
     theme = "simpleNord";
-    dotfilesDir = "/home/fulcrum/testConfig/";
+    dotfilesDir = "/home/fulcrum/.dotfiles/";
 }
