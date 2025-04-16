@@ -319,6 +319,7 @@
 					./user/themes/profiles/${hostSettings.theme}/config.nix
 					./user/packages/profiles/${hostSettings.packageProfile}/system.nix
 					./user/packages/special/shell/system.nix
+					./user/packages/special/explorers/${userSettings.explorer}/system.nix
 
 					./user/user.nix
 
