@@ -51,4 +51,7 @@ in
 		options = "--delete-older-than 14d --keep-generations 10";
 	};
   
+	# Enable ssh
+	services.openssh.enable = true;
+
 }
