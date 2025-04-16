@@ -1,8 +1,6 @@
 { pkgs, lib, pkgs-stable, pkgs-unstable, userSettings, ... }:
 {
 
-	imports = [
-	];
 
 	home.packages = with pkgs; [
         	git
