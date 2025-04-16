@@ -11,6 +11,9 @@
 		enable = true;
 		userName = userSettings.git.userName;
 		userEmail = userSettings.git.userEmail;
+		extraConfig = {
+			credential.helper = "store";
+		};
 	};
 	
 } 
