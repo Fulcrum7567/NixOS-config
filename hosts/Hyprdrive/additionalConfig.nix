@@ -21,12 +21,14 @@
 
       powerManagement.enable = true;
 
-      powerManagement.finegrained = false;
+      powerManagement.finegrained = true;
 
 
       open = true;
 
       nvidiaSettings = true;
+
+      dynamicBoost.enable = true;
 
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
