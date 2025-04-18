@@ -127,6 +127,8 @@
 			inputs.nixpkgs.follows = "nixpkgs-unstable";
 		};
 
+		nixcord.url = "github:kaylorben/nixcord";
+
 
 
 	};

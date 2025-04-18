@@ -15,8 +15,7 @@
     # Syncthing
     services.syncthing = {
         enable = true;
-        tray.enable = true;
-        user = userSettings.username;
+        tray.enable = false;
 
         settings = {
             devices = {

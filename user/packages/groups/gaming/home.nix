@@ -2,7 +2,8 @@
 {
 imports = [
    ../../binaries/home/minecraft.nix
-   ../../binaries/home/discord.nix
+   #../../binaries/home/discord.nix
+   ../../binaries/home/nixcord.nix
 
 ];
 

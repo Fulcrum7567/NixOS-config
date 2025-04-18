@@ -21,14 +21,14 @@
 
       powerManagement.enable = true;
 
-      powerManagement.finegrained = true;
+      powerManagement.finegrained = false;
 
 
       open = true;
 
       nvidiaSettings = true;
 
-      dynamicBoost.enable = true;
+      dynamicBoost.enable = false;
 
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -64,6 +64,6 @@
    };
 
    # Monitor brightness
-  boot.kernelParams = [ "acpi_backlight=video" ];
+   boot.kernelParams = [ "acpi_backlight=video" ];
 
 }
