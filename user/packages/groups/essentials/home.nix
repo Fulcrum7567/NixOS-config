@@ -13,6 +13,8 @@
 		dconf-editor
 		libnotify
 		easyeffects
+		jetbrains-toolbox
+
 
 	] ++ (with pkgs-stable; [
 		# packages that always use the stable branch

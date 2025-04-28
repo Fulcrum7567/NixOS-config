@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, pkgs-default, ... }:
 {
 	imports = [
 		inputs.nixcord.homeManagerModules.nixcord
@@ -8,9 +8,9 @@
 		enable = true;
 		vesktop = {
 			enable = true;
-			package = pkgs.vesktop.overrideAttrs (prev: {
+			package = pkgs-default.vesktop.overrideAttrs (prev: {
 				desktopItems = [
-					(pkgs.makeDesktopItem {
+					(pkgs-default.makeDesktopItem {
 						name = "discord";
 						desktopName = "Discord";
 						exec = "vesktop %U";

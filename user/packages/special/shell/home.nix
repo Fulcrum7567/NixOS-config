@@ -21,11 +21,18 @@
 	    initExtra = ''
 	    PROMPT=" ◉ %U%F{magenta}%n%f%u@%U%F{blue}%m%f%u:%F{yellow}%~%f
 	     %F{green}→%f "
-	    [ $TERM = "dumb" ] && unsetopt zle && PS1='$ '
-	    bindkey '^P' history-beginning-search-backward
-	    bindkey '^N' history-beginning-search-forward
+	     
+	    if [[ -n "$DIRENV_DIR" ]]; then
+		    PROMPT="%F{green}❄️ nix-shell%f $PROMPT"
+		fi
 	    '';
 	  };
+
+	programs.direnv = {
+	    enable = true;
+	    nix-direnv.enable = true;
+	    enableZshIntegration = true;
+	};
 
 
 } 

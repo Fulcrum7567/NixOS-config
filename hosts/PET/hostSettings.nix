@@ -4,7 +4,7 @@
     systemType = "laptop";
     defaultPackageState = "stable";
     gpuManufacturer = "nvidia";
-    packageProfile = "Work";
+    packageProfile = "Profile1";
     desktop = "onlyGnome";
     theme = "simpleNord";
     dotfilesDir = "/home/fulcrum/.dotfiles/";
