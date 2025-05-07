@@ -15,7 +15,10 @@
 
   	programs.zsh = {
 	    enable = true;
-	    autosuggestion.enable = true;
+	    autosuggestion = {
+	    	enable = true;
+	    	highlight = "fg=#8c9ebf,bold,underline";
+	    };
 	    syntaxHighlighting.enable = true;
 	    enableCompletion = true;
 	    autocd = true;
@@ -30,7 +33,7 @@
 
 	    oh-my-zsh = {
 	    	enable = true;
-	    	
+
 	    };
 	  };
 
