@@ -18,6 +18,7 @@
 	    autosuggestion.enable = true;
 	    syntaxHighlighting.enable = true;
 	    enableCompletion = true;
+	    autocd = true;
 	    initContent = ''
 	    PROMPT=" ◉ %U%F{magenta}%n%f%u@%U%F{blue}%m%f%u:%F{yellow}%~%f
 	     %F{green}→%f "
@@ -26,6 +27,11 @@
 		    PROMPT="%F{green}❄️ nix-shell%f $PROMPT"
 		fi
 	    '';
+
+	    oh-my-zsh = {
+	    	enable = true;
+	    	
+	    };
 	  };
 
 	programs.direnv = {
