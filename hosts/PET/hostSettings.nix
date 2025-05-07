@@ -2,7 +2,7 @@
     system = "x86_64-linux";
     systemState = "unstable";
     systemType = "laptop";
-    defaultPackageState = "stable";
+    defaultPackageState = "unstable";
     gpuManufacturer = "nvidia";
     packageProfile = "Profile1";
     desktop = "onlyGnome";
