@@ -1,8 +1,5 @@
 { pkgs-default, ... }:
 {	
-	home.packages = with pkgs-default; [
-		pavucontrol
-	];
 
 	programs.waybar.settings.mainBar = {
 		"pulseaudio" = {

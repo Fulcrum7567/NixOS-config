@@ -12,7 +12,6 @@
 		gum
 		dconf-editor
 		libnotify
-		easyeffects
 		jetbrains-toolbox
 
 

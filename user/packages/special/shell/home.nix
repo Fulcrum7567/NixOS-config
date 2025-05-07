@@ -18,7 +18,7 @@
 	    autosuggestion.enable = true;
 	    syntaxHighlighting.enable = true;
 	    enableCompletion = true;
-	    initExtra = ''
+	    initContent = ''
 	    PROMPT=" ◉ %U%F{magenta}%n%f%u@%U%F{blue}%m%f%u:%F{yellow}%~%f
 	     %F{green}→%f "
 	     
