@@ -23,7 +23,7 @@
 
 		"org/gnome/desktop/wm/keybindings" = {
 			activate-window-menu = [];
-			always-on-top = [ "<Control><Super>t" ];
+			always-on-top = [ "<Shift><Super>t" ];
 			begin-move = [];
 			begin-resize = [];
 			close = [ "<Super>q" ];
